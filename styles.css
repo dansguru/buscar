@@ -160,13 +160,25 @@ button, input { font: inherit; }
 .why-section { margin-top: 12px; }
 .why-section .section-subtitle { margin-bottom: 13px; }
 .benefit-card { min-height: 130px; padding: 12px 10px 10px; }
-.benefit-icon { width: 50px; height: 50px; margin: 0 auto 7px; border-radius: 50%; display: grid; place-items: center; font-size: 25px; color: #f17c7c; }
+.benefit-icon { width: 50px; height: 50px; margin: 0 auto 7px; border-radius: 50%; display: grid; place-items: center; }
+.benefit-icon img { width: 28px; height: 28px; object-fit: contain; }
 .pink { background: #eaf7fc; }
 .lavender { background: #f2f0fc; color: #394e89; }
 .mint { background: #edf8f1; color: #ef8880; }
-.blue { background: #eef4ff; font-size: 20px; }
+.blue { background: #eef4ff; }
 .benefit-card h3 { margin: 0 0 5px; font-size: 12px; font-weight: 600; }
 .benefit-card p { margin: 0; color: #596474; font-size: 10px; line-height: 1.5; }
+.scroll-reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s cubic-bezier(.2,.75,.25,1); }
+.scroll-reveal.is-revealed { opacity: 1; transform: translateY(0); }
+.amenity-card.scroll-reveal:nth-child(2), .benefit-card.scroll-reveal:nth-child(2) { transition-delay: 70ms; }
+.amenity-card.scroll-reveal:nth-child(3), .benefit-card.scroll-reveal:nth-child(3) { transition-delay: 140ms; }
+.amenity-card.scroll-reveal:nth-child(4), .benefit-card.scroll-reveal:nth-child(4) { transition-delay: 210ms; }
+.info-card { transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease; }
+.amenity-card img, .benefit-icon img { transition: transform .3s cubic-bezier(.2,.75,.25,1); }
+@media (hover: hover) {
+  .info-card:hover { transform: translateY(-5px); border-color: #e1d8d8; box-shadow: 0 12px 26px rgba(33, 20, 20, .1); }
+  .amenity-card:hover img, .benefit-card:hover .benefit-icon img { transform: scale(1.1); }
+}
 
 .chat-button { position: fixed; right: 25px; bottom: 24px; width: 54px; height: 54px; border-radius: 50%; background: #171717; color: #fff; display: grid; place-items: center; font-size: 18px; font-weight: 800; box-shadow: 0 5px 20px #0003; z-index: 20; }
 

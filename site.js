@@ -125,6 +125,23 @@
     whatsappUrl
   };
 
+  const revealTargets = document.querySelectorAll(
+    '.content-section h2, .content-section .section-subtitle, .amenity-card, .benefit-card'
+  );
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-revealed');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.16, rootMargin: '0px 0px -24px 0px' });
+    revealTargets.forEach((target) => {
+      target.classList.add('scroll-reveal');
+      revealObserver.observe(target);
+    });
+  }
+
   const menuToggle = document.querySelector('.menu-toggle');
   const mainNav = document.querySelector('.main-nav');
   const siteHeader = menuToggle && menuToggle.closest('.site-header');
