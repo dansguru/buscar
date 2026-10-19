@@ -135,14 +135,21 @@
 
     const sheetHead = document.createElement('div');
     sheetHead.className = 'menu-sheet-head';
+    const sheetBrand = document.createElement('span');
+    sheetBrand.className = 'menu-sheet-brand';
+    const sheetLogo = document.createElement('img');
+    sheetLogo.className = 'menu-sheet-logo';
+    sheetLogo.src = 'public/logo-2.png';
+    sheetLogo.alt = '';
     const sheetTitle = document.createElement('strong');
-    sheetTitle.textContent = 'Menu';
+    sheetTitle.textContent = 'BUSCAR';
+    sheetBrand.append(sheetLogo, sheetTitle);
     const closeButton = document.createElement('button');
     closeButton.className = 'menu-sheet-close';
     closeButton.type = 'button';
     closeButton.setAttribute('aria-label', 'Close navigation');
     closeButton.textContent = '\u00d7';
-    sheetHead.append(sheetTitle, closeButton);
+    sheetHead.append(sheetBrand, closeButton);
     mainNav.prepend(sheetHead);
 
     const closeMenu = (restoreFocus = true) => {
