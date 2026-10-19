@@ -1,10 +1,10 @@
 /* Shared safety notice, page transitions, and static information pages. */
 body { animation: site-page-in .42s cubic-bezier(.2,.75,.25,1) both; }
 @keyframes site-page-in {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; }
   to { opacity: 1; }
 }
-body.is-leaving { opacity: 0; transform: translateY(-5px); transition: opacity .18s ease, transform .18s ease; }
+body.is-leaving { opacity: 0; transition: opacity .18s ease; }
 
 .safety-banner {
   display: flex;
@@ -12,6 +12,8 @@ body.is-leaving { opacity: 0; transform: translateY(-5px); transition: opacity .
   justify-content: center;
   flex-wrap: wrap;
   gap: 5px 8px;
+  max-height: 200px;
+  overflow: hidden;
   padding: 10px 18px;
   background: #fff4dd;
   border-bottom: 1px solid #efd8a5;
@@ -19,9 +21,19 @@ body.is-leaving { opacity: 0; transform: translateY(-5px); transition: opacity .
   text-align: center;
   font-size: 12px;
   line-height: 1.45;
+  transition: opacity .3s ease, max-height .45s ease, padding .45s ease, border-width .45s ease, visibility 0s linear .45s;
 }
 .safety-banner strong { font-weight: 800; }
 .safety-banner a { color: #7a161b; font-weight: 800; text-decoration: underline; }
+.safety-banner.is-dismissed {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-bottom-width: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
 
 .safety-dialog-backdrop {
   position: fixed;
@@ -33,12 +45,18 @@ body.is-leaving { opacity: 0; transform: translateY(-5px); transition: opacity .
   background: rgba(18, 18, 18, .58);
   opacity: 0;
   visibility: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   transition: opacity .24s ease, visibility .24s ease;
 }
 .safety-dialog-backdrop.show { opacity: 1; visibility: visible; }
 .safety-dialog {
   position: relative;
   width: min(440px, 100%);
+  max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 28px 26px 24px;
   border-radius: 18px;
   background: #fff;
@@ -81,6 +99,17 @@ body.is-leaving { opacity: 0; transform: translateY(-5px); transition: opacity .
 }
 .safety-dialog-actions button { background: #fff; color: #191919; }
 .safety-dialog-actions a:hover { background: #a71920; border-color: #a71920; }
+
+@media (max-width: 560px) {
+  .safety-banner { gap: 3px 6px; padding: 7px 12px; font-size: 11px; line-height: 1.35; }
+  .safety-dialog-backdrop { padding: 12px; }
+  .safety-dialog { max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); padding: 18px 16px 16px; border-radius: 15px; }
+  .safety-dialog img { width: 88px; height: 66px; margin-bottom: 6px; }
+  .safety-dialog h2 { margin-bottom: 7px; font-size: 18px; }
+  .safety-dialog p { margin-bottom: 12px; font-size: 12px; line-height: 1.45; }
+  .safety-dialog-actions { gap: 8px; }
+  .safety-dialog-actions a, .safety-dialog-actions button { min-height: 40px; padding: 0 13px; }
+}
 
 .info-main { width: min(1120px, calc(100% - 36px)); min-height: 58vh; margin: 0 auto; padding: 52px 0 70px; }
 .info-hero {
@@ -155,7 +184,6 @@ body.gallery-open { overflow: hidden; }
   .gallery-item, .gallery-item img { min-height: 0; }
   .gallery-item--tall { grid-row: span 2; }
   .gallery-item--feature { grid-row: span 2; }
-  .safety-dialog { padding: 26px 20px 20px; }
 }
 @media (max-width: 440px) {
   .info-grid { grid-template-columns: 1fr; }

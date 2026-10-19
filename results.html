@@ -163,14 +163,6 @@
   <script src="site.js"></script>
   <script src="auth.js"></script>
   <script>
-    /* ---------- Header menu ---------- */
-    const menuToggle = document.querySelector('.menu-toggle');
-    const nav = document.querySelector('.main-nav');
-    menuToggle.addEventListener('click', () => {
-      const isOpen = nav.classList.toggle('is-open');
-      menuToggle.setAttribute('aria-expanded', String(isOpen));
-    });
-
     /* ---------- Read the search ---------- */
     const params = new URLSearchParams(location.search);
     const FROM = (params.get('from') || '').toUpperCase();

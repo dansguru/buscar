@@ -102,14 +102,6 @@
   <script src="site.js"></script>
   <script src="auth.js"></script>
   <script>
-    /* header menu */
-    const menuToggle = document.querySelector('.menu-toggle');
-    const nav = document.querySelector('.main-nav');
-    menuToggle.addEventListener('click', () => {
-      const isOpen = nav.classList.toggle('is-open');
-      menuToggle.setAttribute('aria-expanded', String(isOpen));
-    });
-
     const form = document.getElementById('signupForm');
     const err = document.getElementById('suError');
 

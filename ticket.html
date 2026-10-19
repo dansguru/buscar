@@ -41,8 +41,6 @@
   </main>
   <script src="site.js"></script><script src="auth.js"></script>
   <script>
-    const toggle = document.querySelector('.menu-toggle'), nav = document.querySelector('.main-nav');
-    toggle.addEventListener('click', () => { const open = nav.classList.toggle('is-open'); toggle.setAttribute('aria-expanded', String(open)); });
     document.getElementById('ticketForm').addEventListener('submit', (event) => {
       event.preventDefault();
       const form = event.currentTarget, ticket = form.ticket.value.trim(), mobile = form.mobile.value.trim();
