@@ -17,6 +17,7 @@ const siteFiles = [
   'auth.css',
   'site.css',
   'auth.js',
+  'routes.js',
   'site.js'
 ];
 

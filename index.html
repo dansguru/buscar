@@ -222,6 +222,7 @@
   <a class="chat-button" href="https://wa.me/254745342479" aria-label="Chat with support">•••</a>
 
   <script src="site.js"></script>
+  <script src="routes.js"></script>
   <script src="auth.js"></script>
   <script>
     // Hero background slideshow (hero-1 <-> hero-2)
@@ -254,25 +255,7 @@
 
     // Our routes
     (() => {
-      const towns = ['NAIROBI','MTITO ANDEI','VOI','KALOLENI','MALINDI','MACHAKOS JUNCTION','KILIFI','GEDE','TIMBONII'];
-      const forward = {
-        'NAIROBI': ['MTITO ANDEI','VOI','KALOLENI','MALINDI','MACHAKOS JUNCTION','KILIFI','GEDE','TIMBONII'],
-        'MTITO ANDEI': ['VOI','KALOLENI','MALINDI','KILIFI','GEDE','TIMBONII'],
-        'VOI': ['KALOLENI','MALINDI','KILIFI','GEDE','TIMBONII'],
-        'KALOLENI': ['MALINDI','KILIFI','GEDE','TIMBONII'],
-        'MACHAKOS JUNCTION': ['MTITO ANDEI','VOI','KALOLENI','MALINDI','KILIFI','GEDE','TIMBONII'],
-        'KILIFI': ['MALINDI','GEDE','TIMBONII'],
-        'GEDE': ['MALINDI','TIMBONII'],
-        'TIMBONII': ['MALINDI']
-      };
-      const routes = [];
-      Object.entries(forward).forEach(([a, list]) => list.forEach(b => routes.push([a, b])));
-      ['MTITO ANDEI','VOI','KALOLENI','MALINDI','KILIFI','GEDE','TIMBONII'].forEach(a => {
-        const targets = a === 'MALINDI' ? ['NAIROBI','MTITO ANDEI','VOI','KALOLENI','KILIFI','GEDE','TIMBONII']
-          : towns.slice(0, towns.indexOf(a)).filter(t => t !== 'MACHAKOS JUNCTION' && t !== 'MALINDI');
-        targets.forEach(b => routes.push([a, b]));
-      });
-      [['NAIROBI','MOMBASA'],['NAIROBI','EASTLEIGH'],['NAIROBI','MTWAPA']].forEach(r => routes.push(r));
+      const routes = window.BuscarRouteData.getRoutes();
 
       const chips = document.getElementById('routeChips');
       const search = document.getElementById('routeSearch');
