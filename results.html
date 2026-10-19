@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Available Buses — BUSCAR</title>
+  <!-- styles.css = shared header/base, results.css = this page, seats.css = seat panel + seat map -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="results.css">
+  <link rel="stylesheet" href="seats.css">
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body class="results-page">
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html" aria-label="Buscar home">
+        <img class="brand-shield" src="public/logo-2.png" alt="">
+        <span class="brand-text">
+          <span class="brand-name">BUSCAR</span>
+          <span class="brand-tagline">EAGLE ABOVE THE REST</span>
+        </span>
+      </a>
+      <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="ticket.html">Print Ticket</a>
+        <a href="contact.html">Contact Us</a>
+        <a href="gallery.html">Gallery</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="language" aria-label="Language: English">
+          <img src="public/uk.png" alt="UK flag">
+        </button>
+        <a class="support" href="https://wa.me/254745342479"><span class="help-mark">?</span> Support</a>
+        <a class="account-btn" href="#account">My Account</a>
+      </div>
+    </div>
+  </header>
+  <div class="safety-banner"><strong>Sample trip and seat data:</strong> availability is confirmed manually on WhatsApp. Please do not pay through unverified links. <a href="https://wa.me/254745342479">Contact BUSCAR</a></div>
+
+  <!-- Dark trip bar -->
+  <section class="trip-bar" aria-label="Trip summary">
+    <div class="trip-bar-inner">
+      <a class="trip-back" href="index.html#ticket" aria-label="Back to search">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      </a>
+      <span class="trip-bus-icon">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="15" rx="3"/><path d="M4 11h16M8 21l1-3M16 21l-1-3"/><circle cx="8.5" cy="14.5" r=".6"/><circle cx="15.5" cy="14.5" r=".6"/></svg>
+      </span>
+      <div class="trip-bar-text">
+        <strong id="routeTitle">—</strong>
+        <span id="routeDate">—</span>
+      </div>
+    </div>
+  </section>
+
+  <main class="results-wrap">
+    <!-- Filters -->
+    <div class="filters" id="filters">
+      <a class="modify-btn" href="index.html#ticket">Modify Trip</a>
+
+      <div class="filter" data-filter="boarding">
+        <button class="filter-btn" type="button" aria-expanded="false">
+          <span class="f-icon"><svg viewBox="0 0 24 30" width="12" height="14" fill="currentColor"><path d="M12 29C12 29 1 17 1 11a11 11 0 0 1 22 0c0 6-11 18-11 18zm0-14a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg></span>
+          <span>Boarding</span>
+          <svg class="chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="filter-panel"></div>
+      </div>
+
+      <div class="filter" data-filter="dropping">
+        <button class="filter-btn" type="button" aria-expanded="false">
+          <span class="f-icon"><svg viewBox="0 0 24 30" width="12" height="14" fill="currentColor"><path d="M12 29C12 29 1 17 1 11a11 11 0 0 1 22 0c0 6-11 18-11 18zm0-14a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg></span>
+          <span>Dropping</span>
+          <svg class="chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="filter-panel"></div>
+      </div>
+
+      <div class="filter" data-filter="departure">
+        <button class="filter-btn" type="button" aria-expanded="false">
+          <span class="f-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 5v5.4l3.6 2.1-.8 1.3L11 13V7h2z"/></svg></span>
+          <span>Departure</span>
+          <svg class="chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="filter-panel"></div>
+      </div>
+
+      <div class="filter" data-filter="amenities">
+        <button class="filter-btn" type="button" aria-expanded="false">
+          <span class="f-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9L12 2z"/></svg></span>
+          <span>Amenities</span>
+          <svg class="chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="filter-panel"></div>
+      </div>
+    </div>
+
+    <div class="results-head">
+      <span>Search Result</span>
+      <span id="foundCount">&nbsp;</span>
+    </div>
+
+    <div class="results-layout" id="layout">
+      <div id="tripList" aria-live="polite"></div>
+
+      <!-- Seat selection: side panel on desktop, bottom sheet on mobile -->
+      <aside class="seat-panel" id="seatPanel" aria-label="Seat selection" aria-hidden="true">
+        <div class="sheet-head" id="sheetHead">
+          <span class="sheet-grab" aria-hidden="true"></span>
+          <strong>Seat Selection</strong>
+          <button class="sheet-close" id="sheetClose" type="button" aria-label="Close seat selection">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+
+        <div class="panel-body">
+          <div class="seat-legend" aria-label="Seat legend">
+            <span><i class="lg vip"></i>VIP</span>
+            <span><i class="lg normal"></i>Normal</span>
+            <span><i class="lg business"></i>Business</span>
+            <span><i class="lg booked"></i>Booked</span>
+          </div>
+
+          <div class="bus-wrap"><div class="bus" id="bus"></div></div>
+
+          <section class="sel-summary">
+            <h3>Selected Seats</h3>
+            <div id="selList" class="sel-list"><span class="none">No seats selected</span></div>
+            <div class="points">
+              <label>Boarding Point
+                <select id="boardSel"></select>
+              </label>
+              <label>Dropping Point
+                <select id="dropSel"></select>
+              </label>
+              <label>Passenger Name
+                <input id="passengerName" type="text" autocomplete="name" placeholder="Name for this booking">
+              </label>
+              <label>Mobile Number
+                <input id="passengerPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Number BUSCAR can reach">
+              </label>
+            </div>
+          </section>
+
+          <div class="panel-action">
+            <button class="continue" id="continueBtn" type="button" disabled>
+              <span id="continueText">Select at least one seat</span>
+              <span class="info" id="continueInfo" aria-hidden="true">!</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div class="sheet-backdrop" id="backdrop"></div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="site.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    /* ---------- Header menu ---------- */
+    const menuToggle = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.main-nav');
+    menuToggle.addEventListener('click', () => {
+      const isOpen = nav.classList.toggle('is-open');
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    /* ---------- Read the search ---------- */
+    const params = new URLSearchParams(location.search);
+    const FROM = (params.get('from') || '').toUpperCase();
+    const TO = (params.get('to') || '').toUpperCase();
+    const DATE = params.get('date') || '';
+    const VARIANT = Math.max(0, Number.parseInt(params.get('variant') || '0', 10) || 0);
+
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    document.getElementById('routeTitle').textContent = FROM && TO ? FROM + ' - ' + TO : 'Choose a route';
+    document.getElementById('routeDate').textContent = DATE || '';
+    document.title = (FROM && TO ? FROM + ' → ' + TO + ' — ' : '') + 'BUSCAR';
+
+    /* ---------- Sample data (replace getTrips() with your API call) ---------- */
+    const hash = (s) => { let h = 7; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; };
+    const fmt = (mins) => {
+      const m = ((mins % 1440) + 1440) % 1440;
+      const h24 = Math.floor(m / 60), mm = String(m % 60).padStart(2, '0');
+      const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+      return String(h12).padStart(2, '0') + ':' + mm + ' ' + (h24 < 12 ? 'AM' : 'PM');
+    };
+    const code = (name) => name.split(' ').map((w) => w.slice(0, w.length > 1 ? 3 : 1)).join('').slice(0, 4);
+    const AMENITIES = ['Wi-Fi', 'Power Outlets', 'Extra Legroom', 'VIP Seating'];
+    const DEPARTURES = [330, 450, 600, 780, 930, 1080, 1260, 1435];
+
+    /* ---- seat layout (45 seats: 4 VIP A-D + 1..41) ---- */
+    const SEAT_IDS = ['A', 'B', 'C', 'D'].concat(Array.from({ length: 41 }, (_, i) => String(i + 1)));
+    const seatType = (id) => (['A', 'B', 'C', 'D'].includes(id) ? 'vip' : (+id <= 4 ? 'business' : 'normal'));
+    const FARE_KEY = { vip: 'Vip', business: 'Bclass', normal: 'Normal' };
+    const seatName = (id) => (seatType(id) === 'vip' ? 'VIP ' + id : 'Seat ' + id);
+
+    const sessionSeed = window.BuscarSite.getState().seed;
+
+    function buildSeats(trip, seed) {
+      // Stable per-browser demo availability, so a reload never reshuffles the map.
+      const order = SEAT_IDS.slice().sort((a, b) => hash(a + trip.id + seed) - hash(b + trip.id + seed));
+      const free = new Set(order.slice(0, trip.seatsLeft));
+      const saved = window.BuscarSite.getState().selections[[FROM, TO, DATE, trip.id].join('|')];
+      if (saved && Array.isArray(saved.seats)) saved.seats.forEach((id) => free.add(id));
+      const seats = {};
+      SEAT_IDS.forEach((id) => { seats[id] = { type: seatType(id), free: free.has(id) }; });
+      return seats;
+    }
+
+    function makeTrips(from, to) {
+      const seed = hash([sessionSeed, from, to, DATE, VARIANT].join('|'));
+      const count = 2 + (seed % 3);
+      const trips = [];
+      for (let i = 0; i < count; i++) {
+        const s = hash(seed + ':' + i);
+        const dep = DEPARTURES[s % DEPARTURES.length];
+        const dur = 240 + (s % 330);
+        const vip = 1500 + (s % 14) * 100;
+        const t = {
+          id: 'T' + s.toString(36).toUpperCase(),
+          type: ['45 SEATER A', '45 SEATER B', '45 SEATER EXECUTIVE'][s % 3],
+          badge: ['Highway', 'Express', 'Coastal'][Math.floor(s / 3) % 3],
+          code: code(from) + ' - ' + code(to),
+          from, to,
+          boarding: from + (s % 2 ? ' Main Stage' : ' Bus Terminal'),
+          dropping: to + (s % 3 ? ' CBD' : ' Terminal'),
+          depMins: dep,
+          depart: fmt(dep),
+          arrive: fmt(dep + dur),
+          duration: Math.floor(dur / 60) + 'h ' + (dur % 60) + 'm',
+          rating: (3 + (s % 20) / 10).toFixed(1),
+          seatsLeft: 7 + (s % 20),
+          fares: { Vip: vip, Bclass: vip - 500, Normal: vip - 500 },
+          amenities: AMENITIES.filter((_, k) => (s >> k) & 1 || k === 0)
+        };
+        t.boardPoints = [t.boarding, from + ' Highway Stage', from + ' Town Centre'];
+        t.dropPoints = [t.dropping, to + ' Highway Stage', to + ' Town Centre'];
+        t.seats = buildSeats(t, s);
+        trips.push(t);
+      }
+      return trips.sort((a, b) => a.depMins - b.depMins);
+    }
+
+    // TODO: swap for fetch('/api/trips?from=..&to=..&date=..').then(r => r.json())
+    const getTrips = () => new Promise((resolve) => setTimeout(() => resolve(makeTrips(FROM, TO)), 650));
+
+    /* ---------- State ---------- */
+    const list = document.getElementById('tripList');
+    const layout = document.getElementById('layout');
+    const panel = document.getElementById('seatPanel');
+    const backdrop = document.getElementById('backdrop');
+    const foundEl = document.getElementById('foundCount');
+    const money = (n) => Number(n).toLocaleString('en-US');
+    const isMobile = () => window.matchMedia('(max-width: 860px)').matches;
+    const MAX_SEATS = 6;
+
+    let allTrips = [];
+    let openId = null;
+    const selections = {};
+    const selectionKey = (id) => [FROM, TO, DATE, id].join('|');
+    const sel = (id) => {
+      if (!selections[id]) {
+        const saved = window.BuscarSite.getState().selections[selectionKey(id)] || {};
+        selections[id] = {
+          seats: new Set(Array.isArray(saved.seats) ? saved.seats : []),
+          board: saved.board || '',
+          drop: saved.drop || '',
+          name: saved.name || '',
+          phone: saved.phone || ''
+        };
+      }
+      return selections[id];
+    };
+    const persistSelection = (t) => {
+      const state = sel(t.id);
+      window.BuscarSite.saveSelection(selectionKey(t.id), {
+        seats: [...state.seats], board: state.board, drop: state.drop, name: state.name, phone: state.phone
+      });
+    };
+    const tripById = (id) => allTrips.find((t) => t.id === id);
+
+    /* ---------- Trip cards ---------- */
+    function skeletonCards(n = 3) {
+      list.innerHTML = Array.from({ length: n }, () => '<div class="trip-card skeleton-card"><span class="sk sk-logo"></span><span class="sk sk-line w1"></span><span class="sk sk-line w2"></span><span class="sk sk-line w3"></span><span class="sk sk-btn"></span></div>').join('');
+      foundEl.innerHTML = '&nbsp;';
+    }
+
+    function totalFor(t) {
+      let sum = 0;
+      sel(t.id).seats.forEach((id) => { sum += t.fares[FARE_KEY[t.seats[id].type]]; });
+      return sum;
+    }
+    const cardPrice = (t) => (sel(t.id).seats.size ? totalFor(t) : t.fares.Vip);
+
+    function cardHTML(t) {
+      const open = t.id === openId;
+      return `
+      <article class="trip-card${open ? ' is-open' : ''}" data-id="${esc(t.id)}">
+        <div class="ribbon"><span>${esc(t.badge)}</span></div>
+        <div class="t-logo"><img src="public/logo-2.png" alt="BUSCAR"></div>
+        <div class="t-type">${esc(t.type)}</div>
+        <div class="t-dep">
+          <span class="t-code">${esc(t.code)}</span>
+          <strong>${esc(t.depart)}</strong>
+          <small>${esc(t.from)}</small>
+        </div>
+        <div class="t-dur"><i></i><span>${esc(t.duration)}</span><i></i></div>
+        <div class="t-arr">
+          <strong>${esc(t.arrive)}</strong>
+          <small>${esc(t.to)}</small>
+        </div>
+        <div class="t-rate">
+          <span class="rating">★ ${esc(t.rating)}</span>
+          <span class="seats">(${t.seatsLeft} seats left)</span>
+        </div>
+        <div class="t-price">
+          ${Object.entries(t.fares).map(([k, v]) => `<div>${esc(k)}: <b>${money(v)}</b></div>`).join('')}
+        </div>
+        <div class="price-one">${money(cardPrice(t))}</div>
+        <button class="view-seats" type="button" data-id="${esc(t.id)}" aria-expanded="${open}">${open ? 'Close' : 'View Seats'}</button>
+      </article>`;
+    }
+
+    /* ---------- Filters ---------- */
+    const active = { boarding: new Set(), dropping: new Set(), departure: new Set(), amenities: new Set() };
+    const WINDOWS = {
+      'Morning (05:00 - 12:00)': (m) => m >= 300 && m < 720,
+      'Afternoon (12:00 - 17:00)': (m) => m >= 720 && m < 1020,
+      'Evening (17:00 - 21:00)': (m) => m >= 1020 && m < 1260,
+      'Night (21:00 - 05:00)': (m) => m >= 1260 || m < 300
+    };
+
+    function buildPanels() {
+      const opts = {
+        boarding: [...new Set(allTrips.flatMap((t) => t.boardPoints))],
+        dropping: [...new Set(allTrips.flatMap((t) => t.dropPoints))],
+        departure: Object.keys(WINDOWS),
+        amenities: AMENITIES
+      };
+      document.querySelectorAll('.filter').forEach((f) => {
+        const key = f.dataset.filter;
+        f.querySelector('.filter-panel').innerHTML = opts[key].map((o) =>
+          `<label><input type="checkbox" value="${esc(o)}"> <span>${esc(o)}</span></label>`).join('');
+        f.querySelectorAll('input').forEach((cb) => cb.addEventListener('change', () => {
+          cb.checked ? active[key].add(cb.value) : active[key].delete(cb.value);
+          f.classList.toggle('has-active', active[key].size > 0);
+          renderTrips();
+        }));
+      });
+    }
+
+    function applyFilters() {
+      return allTrips.filter((t) =>
+        (!active.boarding.size || t.boardPoints.some((p) => active.boarding.has(p))) &&
+        (!active.dropping.size || t.dropPoints.some((p) => active.dropping.has(p))) &&
+        (!active.departure.size || [...active.departure].some((w) => WINDOWS[w](t.depMins))) &&
+        (!active.amenities.size || [...active.amenities].every((a) => t.amenities.includes(a)))
+      );
+    }
+
+    function renderTrips() {
+      const trips = applyFilters();
+      foundEl.textContent = trips.length + ' Found';
+      if (openId && !trips.some((t) => t.id === openId)) closeSeats();
+      list.innerHTML = trips.length
+        ? trips.map(cardHTML).join('')
+        : '<div class="empty">No buses match your search. Try changing the filters or <a href="index.html#ticket">modify your trip</a>.</div>';
+    }
+
+    document.querySelectorAll('.filter-btn').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const f = btn.parentElement;
+        const open = !f.classList.contains('open');
+        document.querySelectorAll('.filter.open').forEach((x) => { x.classList.remove('open'); x.querySelector('.filter-btn').setAttribute('aria-expanded', 'false'); });
+        f.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', String(open));
+      });
+    });
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.filter')) document.querySelectorAll('.filter.open').forEach((x) => x.classList.remove('open'));
+    });
+
+    /* ---------- Toast ---------- */
+    const toast = document.getElementById('toast');
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => toast.classList.remove('show'), 3200);
+    }
+
+    /* ---------- Seat map ---------- */
+    const bus = document.getElementById('bus');
+    const selList = document.getElementById('selList');
+    const boardSel = document.getElementById('boardSel');
+    const dropSel = document.getElementById('dropSel');
+    const contBtn = document.getElementById('continueBtn');
+    const contText = document.getElementById('continueText');
+    const contInfo = document.getElementById('continueInfo');
+    const passengerName = document.getElementById('passengerName');
+    const passengerPhone = document.getElementById('passengerPhone');
+
+    function seatButton(t, id, col, row) {
+      const seat = t.seats[id];
+      const chosen = sel(t.id).seats.has(id);
+      const state = chosen ? 'selected' : (seat.free ? 'free' : 'booked');
+      const label = seatName(id) + (seat.free ? ' — KES ' + money(t.fares[FARE_KEY[seat.type]]) : ' — booked');
+      const inner = seat.type === 'vip' ? `<span class="vip-tag">VIP</span><em>${id}</em>` : id;
+      return `<button type="button" class="seat ${seat.type} ${state}" data-seat="${id}" style="grid-column:${col};grid-row:${row}" ${state === 'booked' ? 'disabled' : ''} aria-pressed="${chosen}" aria-label="${esc(label)}" title="${esc(label)}">${inner}</button>`;
+    }
+
+    function drawBus(t) {
+      // columns: 1,2 = left pair · 3 = aisle · 4,5 = right pair
+      let html = '';
+      html += seatButton(t, 'A', 1, 1);
+      html += '<span class="wheel" style="grid-column:4 / 6;grid-row:1" aria-hidden="true"><svg viewBox="0 0 48 48" width="44" height="44" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="24" cy="24" r="21"/><circle cx="24" cy="24" r="5"/><path d="M4 22c6-3 10-3 16 0M44 22c-6-3-10-3-16 0M24 29v14"/></svg></span>';
+      html += seatButton(t, 'B', 1, 2) + seatButton(t, 'C', 4, 2) + seatButton(t, 'D', 5, 2);
+      html += '<span class="door" style="grid-column:1;grid-row:3 / span 2"><b>Door</b></span>';
+      html += seatButton(t, '1', 4, 3) + seatButton(t, '2', 5, 3) + seatButton(t, '3', 4, 4) + seatButton(t, '4', 5, 4);
+      for (let i = 0; i < 8; i++) {
+        const r = 5 + i, n = 5 + i * 4;
+        html += seatButton(t, String(n), 1, r) + seatButton(t, String(n + 1), 2, r);
+        html += seatButton(t, String(n + 2), 4, r) + seatButton(t, String(n + 3), 5, r);
+      }
+      html += seatButton(t, '37', 1, 13) + seatButton(t, '38', 2, 13) + seatButton(t, '39', 3, 13) + seatButton(t, '40', 4, 13) + seatButton(t, '41', 5, 13);
+      bus.innerHTML = html;
+      bus.querySelectorAll('.seat').forEach((seat, index) => seat.style.setProperty('--seat-order', index));
+    }
+
+    function updateSummary(t) {
+      const st = sel(t.id);
+      const ids = [...st.seats].sort((a, b) => SEAT_IDS.indexOf(a) - SEAT_IDS.indexOf(b));
+      selList.innerHTML = ids.length
+        ? ids.map((id) => `<span class="chip">${esc(seatName(id))} · KES ${money(t.fares[FARE_KEY[t.seats[id].type]])}<button type="button" data-remove="${id}" aria-label="Remove ${esc(seatName(id))}">×</button></span>`).join('')
+          + `<div class="sel-total">Total <b>KES ${money(totalFor(t))}</b></div>`
+        : '<span class="none">No seats selected</span>';
+
+      let reason = '';
+      if (!ids.length) reason = 'Select at least one seat';
+      else if (!st.board) reason = 'Select a boarding point';
+      else if (!st.drop) reason = 'Select a dropping point';
+      else if (!st.name.trim()) reason = 'Enter the passenger name';
+      else if (st.phone.replace(/\D/g, '').length < 7) reason = 'Enter a valid mobile number';
+      contBtn.disabled = !!reason;
+      contText.textContent = reason || `Continue · ${ids.length} seat${ids.length > 1 ? 's' : ''} · KES ${money(totalFor(t))}`;
+      contInfo.style.display = reason ? '' : 'none';
+      contBtn.title = reason;
+
+      const card = list.querySelector(`.trip-card[data-id="${t.id}"] .price-one`);
+      if (card) card.textContent = money(cardPrice(t));
+    }
+
+    function fillPoints(t) {
+      const st = sel(t.id);
+      const user = window.BuscarSite.getCookie('user');
+      if (!st.name && user && user.name) st.name = user.name;
+      if (!st.phone && user && user.phone) st.phone = user.phone;
+      boardSel.innerHTML = '<option value="" disabled>Select a boarding point</option>' + t.boardPoints.map((p) => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
+      dropSel.innerHTML = '<option value="" disabled>Select a dropping point</option>' + t.dropPoints.map((p) => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
+      boardSel.value = st.board; dropSel.value = st.drop;
+      passengerName.value = st.name;
+      passengerPhone.value = st.phone;
+      persistSelection(t);
+    }
+
+    /* ---------- Open / close ---------- */
+    function lockScroll() { document.body.style.overflow = (openId && isMobile()) ? 'hidden' : ''; }
+
+    function openSeats(id) {
+      const t = tripById(id);
+      if (!t) return;
+      openId = id;
+      drawBus(t); fillPoints(t); updateSummary(t);
+      layout.classList.add('has-open');
+      panel.setAttribute('aria-hidden', 'false');
+      panel.style.transform = '';
+      backdrop.classList.toggle('show', isMobile());
+      lockScroll();
+      list.querySelectorAll('.trip-card').forEach((c) => {
+        const on = c.dataset.id === id;
+        c.classList.toggle('is-open', on);
+        const b = c.querySelector('.view-seats');
+        b.textContent = on ? 'Close' : 'View Seats';
+        b.setAttribute('aria-expanded', String(on));
+      });
+      panel.querySelector('.panel-body').scrollTop = 0;
+      if (!isMobile()) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function closeSeats() {
+      openId = null;
+      layout.classList.remove('has-open');
+      panel.setAttribute('aria-hidden', 'true');
+      panel.style.transform = '';
+      backdrop.classList.remove('show');
+      lockScroll();
+      list.querySelectorAll('.trip-card.is-open').forEach((c) => {
+        c.classList.remove('is-open');
+        const b = c.querySelector('.view-seats');
+        b.textContent = 'View Seats';
+        b.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    list.addEventListener('click', (e) => {
+      const btn = e.target.closest('.view-seats');
+      if (!btn) return;
+      btn.dataset.id === openId ? closeSeats() : openSeats(btn.dataset.id);
+    });
+
+    bus.addEventListener('click', (e) => {
+      const b = e.target.closest('.seat');
+      if (!b || b.disabled) return;
+      const t = tripById(openId);
+      const st = sel(t.id);
+      const id = b.dataset.seat;
+      if (st.seats.has(id)) st.seats.delete(id);
+      else {
+        if (st.seats.size >= MAX_SEATS) { showToast('You can book up to ' + MAX_SEATS + ' seats at a time.'); return; }
+        st.seats.add(id);
+      }
+      persistSelection(t);
+      const on = st.seats.has(id);
+      b.classList.toggle('selected', on);
+      b.classList.toggle('free', !on);
+      b.setAttribute('aria-pressed', String(on));
+      updateSummary(t);
+    });
+
+    selList.addEventListener('click', (e) => {
+      const r = e.target.closest('[data-remove]');
+      if (!r) return;
+      const t = tripById(openId);
+      sel(t.id).seats.delete(r.dataset.remove);
+      persistSelection(t);
+      const b = bus.querySelector(`[data-seat="${r.dataset.remove}"]`);
+      if (b) { b.classList.remove('selected'); b.classList.add('free'); b.setAttribute('aria-pressed', 'false'); }
+      updateSummary(t);
+    });
+
+    boardSel.addEventListener('change', () => { const t = tripById(openId); sel(t.id).board = boardSel.value; persistSelection(t); updateSummary(t); });
+    dropSel.addEventListener('change', () => { const t = tripById(openId); sel(t.id).drop = dropSel.value; persistSelection(t); updateSummary(t); });
+    passengerName.addEventListener('input', () => { const t = tripById(openId); if (t) { sel(t.id).name = passengerName.value; persistSelection(t); updateSummary(t); } });
+    passengerPhone.addEventListener('input', () => { const t = tripById(openId); if (t) { sel(t.id).phone = passengerPhone.value; persistSelection(t); updateSummary(t); } });
+
+    contBtn.addEventListener('click', () => {
+      const t = tripById(openId), st = sel(t.id);
+      const seats = [...st.seats].map(seatName).join(', ');
+      const bookingId = 'BR-' + Date.now().toString(36).toUpperCase();
+      const message = [
+        'Hello BUSCAR, please confirm this booking request.',
+        `Request reference: ${bookingId}`,
+        `Passenger: ${st.name.trim()}`,
+        `Mobile: ${st.phone.trim()}`,
+        `Route: ${t.from} to ${t.to}`,
+        `Travel date: ${DATE || 'Not specified'}`,
+        `Vehicle: ${t.type} (${t.badge})`,
+        `Preferred seats: ${seats}`,
+        `Boarding point: ${st.board}`,
+        `Dropping point: ${st.drop}`,
+        `Sample total: KES ${money(totalFor(t))}`,
+        'Please confirm availability and verified payment instructions. I will not pay until the trip is confirmed.'
+      ].join('\n');
+      window.BuscarSite.saveRecentBooking({ id: bookingId, route: `${t.from} to ${t.to}` });
+      location.href = window.BuscarSite.whatsappUrl(message);
+    });
+
+    document.getElementById('sheetClose').addEventListener('click', closeSeats);
+    backdrop.addEventListener('click', closeSeats);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && openId) closeSeats(); });
+    window.addEventListener('resize', () => { lockScroll(); backdrop.classList.toggle('show', !!openId && isMobile()); });
+
+    // swipe the sheet header down to dismiss (mobile)
+    (() => {
+      const head = document.getElementById('sheetHead');
+      let y0 = null, dy = 0;
+      head.addEventListener('touchstart', (e) => { y0 = e.touches[0].clientY; dy = 0; panel.style.transition = 'none'; }, { passive: true });
+      head.addEventListener('touchmove', (e) => {
+        if (y0 === null) return;
+        dy = Math.max(0, e.touches[0].clientY - y0);
+        panel.style.transform = `translateY(${dy}px)`;
+      }, { passive: true });
+      head.addEventListener('touchend', () => {
+        if (y0 === null) return;
+        panel.style.transition = '';
+        if (dy > 110) closeSeats(); else panel.style.transform = '';
+        y0 = null;
+      });
+    })();
+
+    /* ---------- Go ---------- */
+    if (!FROM || !TO) {
+      foundEl.textContent = '';
+      list.innerHTML = '<div class="empty">No route selected. <a href="index.html#ticket">Go back and search for a bus</a>.</div>';
+    } else {
+      skeletonCards(3);
+      getTrips().then((trips) => { allTrips = trips; buildPanels(); renderTrips(); });
+    }
+  </script>
+</body>
+</html>

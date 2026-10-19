@@ -1,0 +1,173 @@
+/* ==========================================================
+   seats.css — seat selection panel, seat map, bottom sheet
+   Load AFTER results.css:
+   <link rel="stylesheet" href="results.css">
+   <link rel="stylesheet" href="seats.css">
+   ========================================================== */
+
+:root {
+  --seat-vip: #ff9800;
+  --seat-normal: #2196f3;
+  --seat-business: #4caf50;
+  --seat-booked: #9a9aa8;
+}
+
+/* ---------- Layout ---------- */
+.results-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; transition: grid-template-columns .32s cubic-bezier(.2,.75,.25,1); }
+#tripList { min-width: 0; }
+
+.seat-panel {
+  display: none;
+  max-height: calc(100vh - 24px);
+  overflow-y: auto;
+  border: 1px solid #e9e9e9;
+  border-radius: 14px;
+  background: #fff;
+  font-family: Lato, Inter, sans-serif;
+  color: #111;
+  box-shadow: 0 8px 28px rgba(20,25,35,.08);
+}
+.sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 6px 4px 10px; }
+.sheet-head strong { font-size: 15px; font-weight: 700; }
+.sheet-grab { display: none; }
+.sheet-close { border: 0; background: transparent; color: #444; cursor: pointer; padding: 4px; display: grid; place-items: center; }
+
+.sheet-backdrop { display: none; }
+
+/* ---------- Desktop: side panel ---------- */
+@media (min-width: 861px) {
+  .results-layout.has-open { grid-template-columns: minmax(0, 1fr) 440px; }
+  .results-layout.has-open .seat-panel { display: block; position: sticky; top: 12px; animation: seat-panel-enter .28s cubic-bezier(.2,.75,.25,1) both; }
+  @keyframes seat-panel-enter { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: translateX(0); } }
+
+  /* compact trip cards while the panel is open (stops the horizontal scrollbar) */
+  .has-open .trip-card { padding-right: 16px; }
+  .has-open .t-type { flex: 0 0 80px; padding-left: 10px; }
+  .has-open .t-dep { flex: 0 0 130px; }
+  .has-open .t-code { min-width: 0; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .has-open .t-dur { flex: 1 1 90px; min-width: 0; margin: 0 4px; }
+  .has-open .t-arr { flex: 0 0 100px; }
+  .has-open .t-rate, .has-open .t-price { display: none; }
+  .has-open .price-one { display: block; margin-left: auto; }
+}
+.price-one { display: none; margin-left: auto; color: #d6232c; font: 700 15px/1 Lato, Inter, sans-serif; white-space: nowrap; }
+.trip-card.is-open { border-color: #111; background: #f7f7f7; }
+
+/* ---------- Legend ---------- */
+.seat-legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 16px; margin: 4px 0 12px; font-size: 12px; color: #333; }
+.seat-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.lg { display: inline-block; width: 20px; height: 20px; border-radius: 5px; }
+.lg.vip { background: var(--seat-vip); }
+.lg.normal { background: var(--seat-normal); }
+.lg.business { background: var(--seat-business); }
+.lg.booked { background: var(--seat-booked); }
+
+/* ---------- Bus / seat map ---------- */
+.bus-wrap { display: flex; justify-content: center; padding: 10px 0 18px; }
+.bus {
+  display: grid;
+  /* 1,2 = left pair · 3 = aisle · 4,5 = right pair */
+  grid-template-columns: 40px 40px 26px 40px 40px;
+  grid-template-rows: 48px repeat(12, 40px);   /* 13 rows, fixed height = no overlap */
+  gap: 8px 6px;
+  justify-content: center;
+}
+
+.seat {
+  position: relative;
+  width: 100%; height: 100%;
+  padding: 0; margin: 0;
+  border: 0;
+  border-radius: 9px 9px 5px 5px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font: 700 12px/1 Lato, Inter, sans-serif;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: inset 0 -5px 0 rgba(0,0,0,.18);
+  transition: transform .12s, box-shadow .12s;
+  animation: seat-arrive .28s cubic-bezier(.2,.75,.25,1) both;
+  animation-delay: calc(var(--seat-order, 0) * 8ms);
+}
+@keyframes seat-arrive { from { opacity: 0; transform: translateY(5px) scale(.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes seat-select { 50% { transform: scale(1.1); } }
+.seat.vip { background: var(--seat-vip); }
+.seat.normal { background: var(--seat-normal); }
+.seat.business { background: var(--seat-business); }
+.seat .vip-tag { font-size: 7px; font-weight: 700; letter-spacing: .3px; margin-bottom: 2px; }
+.seat em { font-style: normal; font-size: 12px; }
+
+.seat.free:hover { transform: translateY(-2px); }
+.seat.selected { background: #111; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #111; animation-name: seat-select; animation-duration: .22s; }
+.seat.booked, .seat:disabled { background: var(--seat-booked); opacity: .55; cursor: not-allowed; box-shadow: none; }
+.seat:focus-visible { outline: 2px solid #111; outline-offset: 2px; }
+
+.wheel { display: grid; place-items: center; color: #222; }
+.door {
+  display: grid; place-items: center;
+  border: 1.5px dashed #b8b8b8; border-radius: 6px; color: #8a8a8a;
+  font-size: 11px;
+}
+.door b { font-weight: 500; writing-mode: vertical-rl; transform: rotate(180deg); }
+
+/* ---------- Summary ---------- */
+.sel-summary h3 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+.sel-list { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-height: 28px; font-size: 13px; color: #444; }
+.sel-list .none { color: #555; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 6px 5px 10px; border-radius: 99px; background: #f1f1f1; border: 1px solid #e0e0e0; font-size: 12px; font-weight: 600; }
+.chip button { width: 18px; height: 18px; border: 0; border-radius: 50%; background: #d8d8d8; color: #111; font-size: 13px; line-height: 1; cursor: pointer; }
+.chip button:hover { background: #111; color: #fff; }
+.sel-total { flex-basis: 100%; margin-top: 4px; font-size: 13px; }
+.sel-total b { color: #d6232c; }
+
+.points { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.points label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; }
+.points select, .points input {
+  width: 100%; height: 40px; padding: 0 10px;
+  border: 1px solid #d6d6d6; border-radius: 10px; background: #fff;
+  font: 500 13px Lato, Inter, sans-serif; color: #111;
+  transition: border-color .18s, box-shadow .18s;
+}
+.points select:focus, .points input:focus { outline: 0; border-color: #a71920; box-shadow: 0 0 0 3px rgba(167,25,32,.1); }
+.points input::placeholder { color: #8a8a8a; font-weight: 400; }
+
+.panel-action { margin-top: 14px; }
+.continue {
+  width: 100%; height: 44px; border: 0; border-radius: 99px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: #111; color: #fff; font: 700 13px Lato, Inter, sans-serif; cursor: pointer;
+}
+.continue:hover:not(:disabled) { background: #353535; }
+.continue:disabled { background: #9a9aa8; cursor: not-allowed; }
+.continue .info { width: 16px; height: 16px; border-radius: 50%; background: #fff; color: #9a9aa8; display: grid; place-items: center; font-size: 11px; font-weight: 800; }
+
+/* ---------- Mobile: bottom sheet ---------- */
+@media (max-width: 860px) {
+  .seat-panel {
+    display: block;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    max-height: 88vh;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -8px 30px rgba(0,0,0,.2);
+    transform: translateY(100%);
+    transition: transform .3s ease;
+    visibility: hidden;
+  }
+
+  .results-layout.has-open .seat-panel { transform: translateY(0); visibility: visible; }
+
+  .sheet-head { position: relative; padding: 18px 20px 12px; background: #f7f8fa; border-radius: 20px 20px 0 0; border-bottom: 1px solid #e6e6e6; }
+  .sheet-grab { display: block; position: absolute; top: 7px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 99px; background: #cfcfcf; }
+  .panel-body { overflow-y: auto; padding: 14px 16px 24px; -webkit-overflow-scrolling: touch; }
+  .seat-legend { justify-content: flex-start; }
+
+  .sheet-backdrop { display: block; position: fixed; inset: 0; z-index: 35; background: rgba(0,0,0,.45); opacity: 0; pointer-events: none; transition: opacity .25s; }
+  .sheet-backdrop.show { opacity: 1; pointer-events: auto; }
+
+  .points { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .results-layout, .seat-panel, .seat, .sheet-backdrop { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

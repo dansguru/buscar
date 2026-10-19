@@ -1,0 +1,160 @@
+/* ---------- Results page ---------- */
+.results-page { min-height: 100vh; background: #f5f6f8; }
+
+.trip-bar { background: #191919; color: #fff; }
+.trip-bar-inner {
+  width: min(1300px, calc(100% - 36px));
+  min-height: 58px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+.trip-back { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: #fff; }
+.trip-back:hover { background: #ffffff20; }
+.trip-bus-icon { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: #a71920; }
+.trip-bar-text { display: flex; flex-direction: column; gap: 3px; }
+.trip-bar-text strong { font-size: 14px; letter-spacing: .2px; }
+.trip-bar-text span { color: #c9c9c9; font-size: 11px; }
+
+.results-wrap { width: min(1300px, calc(100% - 36px)); margin: 24px auto 48px; }
+.filters { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
+.modify-btn, .filter-btn {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 14px;
+  border: 1px solid #e3e5e8;
+  border-radius: 8px;
+  background: #fff;
+  color: #282828;
+  font: 600 12px/1 Lato, Inter, sans-serif;
+  white-space: nowrap;
+}
+.modify-btn { border-color: #a71920; background: #a71920; color: #fff; }
+.modify-btn:hover { background: #821315; }
+.filter { position: relative; }
+.filter-btn { cursor: pointer; }
+.filter-btn:hover, .filter.open .filter-btn, .filter.has-active .filter-btn { border-color: #a71920; }
+.filter.has-active .filter-btn { color: #a71920; }
+.f-icon { display: inline-flex; align-items: center; color: #a71920; }
+.chev { transition: transform .18s ease; }
+.filter.open .chev { transform: rotate(180deg); }
+.filter-panel {
+  display: none;
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 220px;
+  max-height: 280px;
+  overflow: auto;
+  padding: 8px;
+  border: 1px solid #e3e5e8;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 10px 28px #0000001a;
+}
+.filter.open .filter-panel { display: grid; gap: 2px; }
+.filter-panel label { display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 5px; color: #333; font-size: 12px; cursor: pointer; }
+.filter-panel label:hover { background: #f5f6f8; }
+.filter-panel input { margin: 0; accent-color: #a71920; }
+
+.results-head { display: flex; align-items: baseline; gap: 8px; margin: 0 0 12px; color: #222; font: 700 16px/1.3 Lato, Inter, sans-serif; }
+.results-head #foundCount { color: #737983; font: 500 12px/1.3 Inter, sans-serif; }
+.results-layout { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 20px; }
+#tripList { display: grid; gap: 12px; min-width: 0; }
+.trip-card {
+  position: relative;
+  min-width: 0;
+  min-height: 126px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  overflow: hidden;
+  padding: 20px 18px 16px;
+  border: 1px solid #e8e9ec;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 3px 12px #18203308;
+  transition: border-color .16s ease, box-shadow .16s ease;
+  animation: trip-card-enter .38s cubic-bezier(.2,.75,.25,1) both;
+}
+.trip-card:nth-child(2) { animation-delay: 55ms; }
+.trip-card:nth-child(3) { animation-delay: 110ms; }
+.trip-card:nth-child(4) { animation-delay: 165ms; }
+@keyframes trip-card-enter { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+.trip-card:hover { border-color: #d2d4d8; box-shadow: 0 5px 18px #18203310; }
+.ribbon { position: absolute; top: 0; left: 0; padding: 4px 9px 4px 12px; border-radius: 0 0 8px 0; background: #a71920; color: #fff; font-size: 9px; font-weight: 700; }
+.t-logo { flex: 0 0 52px; width: 52px; height: 44px; display: grid; place-items: center; }
+.t-logo img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
+.t-type { flex: 0 0 94px; color: #515761; font-size: 10px; font-weight: 700; line-height: 1.4; }
+.t-dep, .t-arr { flex: 0 0 120px; display: flex; flex-direction: column; gap: 4px; }
+.t-code { color: #737983; font-size: 10px; font-weight: 600; }
+.t-dep strong, .t-arr strong { color: #1c1c1c; font: 700 16px/1.15 Lato, Inter, sans-serif; white-space: nowrap; }
+.t-dep small, .t-arr small { overflow: hidden; color: #777e88; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.t-dur { flex: 1 1 80px; min-width: 55px; display: flex; align-items: center; gap: 7px; color: #737983; font-size: 10px; white-space: nowrap; }
+.t-dur i { flex: 1; height: 1px; background: #d7d9dd; }
+.t-rate { flex: 0 0 94px; display: flex; flex-direction: column; gap: 5px; }
+.rating { color: #9a6a00; font-size: 12px; font-weight: 700; }
+.seats { color: #737983; font-size: 10px; }
+.t-price { flex: 0 0 88px; display: grid; gap: 3px; color: #606773; font-size: 10px; }
+.t-price b { color: #222; font-size: 11px; }
+.view-seats { flex: 0 0 auto; min-height: 38px; padding: 0 15px; border: 0; border-radius: 22px; background: #171717; color: #fff; font: 700 11px Lato, Inter, sans-serif; cursor: pointer; white-space: nowrap; }
+.view-seats { transition: background .18s ease, transform .18s ease, box-shadow .18s ease; }
+.view-seats:hover { background: #a71920; transform: translateY(-2px); box-shadow: 0 5px 14px #a7192030; }
+.price-one { display: none; margin-left: auto; color: #d6232c; font: 700 15px/1 Lato, Inter, sans-serif; white-space: nowrap; }
+
+.empty { padding: 30px 22px; border: 1px solid #e8e9ec; border-radius: 10px; background: #fff; color: #565d67; text-align: center; font-size: 13px; }
+.empty a { color: #a71920; font-weight: 700; text-decoration: underline; }
+.skeleton-card { pointer-events: none; }
+.sk { display: block; border-radius: 6px; background: linear-gradient(90deg, #eceef1 25%, #f7f8f9 40%, #eceef1 65%); background-size: 300% 100%; animation: skeleton-shimmer 1.3s ease infinite; }
+.sk-logo { flex: 0 0 52px; width: 52px; height: 38px; }
+.sk-line { height: 11px; }
+.sk-line.w1 { width: 90px; }
+.sk-line.w2 { width: 110px; }
+.sk-line.w3 { width: 70px; }
+.sk-btn { width: 95px; height: 36px; border-radius: 20px; }
+@keyframes skeleton-shimmer { to { background-position: -150% 0; } }
+.toast { position: fixed; z-index: 60; left: 50%; bottom: 24px; max-width: calc(100% - 32px); padding: 12px 18px; border-radius: 8px; background: #202124; color: #fff; font-size: 12px; line-height: 1.45; text-align: center; box-shadow: 0 8px 24px #0003; opacity: 0; pointer-events: none; transform: translate(-50%, 12px); transition: opacity .2s ease, transform .2s ease; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 1100px) {
+  .trip-card { gap: 10px; padding-right: 13px; padding-left: 13px; }
+  .t-logo { flex-basis: 42px; width: 42px; }
+  .t-type { flex-basis: 76px; }
+  .t-dep, .t-arr { flex-basis: 100px; }
+  .t-rate { flex-basis: 78px; }
+  .t-price { flex-basis: 76px; }
+}
+@media (max-width: 860px) {
+  .trip-bar-inner, .results-wrap { width: calc(100% - 28px); }
+  .results-wrap { margin-top: 18px; }
+  .filters { gap: 7px; margin-bottom: 18px; }
+  .modify-btn, .filter-btn { min-height: 36px; padding: 0 10px; font-size: 11px; }
+  .trip-card { flex-wrap: wrap; min-height: 0; gap: 10px 12px; padding: 25px 12px 13px; }
+  .ribbon { top: 0; }
+  .t-logo { flex: 0 0 36px; width: 36px; height: 34px; }
+  .t-type { flex: 1 1 75px; }
+  .t-dep, .t-arr { flex: 1 1 80px; }
+  .t-dur { order: 5; flex-basis: 100px; }
+  .t-rate { order: 6; flex: 1 1 70px; }
+  .t-price { order: 7; flex: 1 1 100%; display: flex; flex-wrap: wrap; gap: 4px 12px; }
+  .view-seats { order: 8; margin-left: auto; }
+}
+@media (max-width: 520px) {
+  .trip-bar-inner, .results-wrap { width: calc(100% - 22px); }
+  .trip-card { column-gap: 8px; }
+  .t-type { flex-basis: calc(100% - 58px); }
+  .t-dep, .t-arr { flex-basis: calc(50% - 8px); }
+  .t-dur { order: 7; flex: 1 1 95px; }
+  .t-rate { order: 6; flex: 1 1 80px; }
+  .t-price { order: 5; flex: 1 1 100%; }
+  .view-seats { order: 8; }
+  .filter-panel { min-width: 190px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trip-card, .view-seats { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery — BUSCAR</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html" aria-label="Buscar home"><img class="brand-shield" src="public/logo-2.png" alt=""><span class="brand-text"><span class="brand-name">BUSCAR</span><span class="brand-tagline">EAGLE ABOVE THE REST</span></span></a>
+      <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html">Home</a><a href="about.html">About</a><a href="ticket.html">Print Ticket</a><a href="contact.html">Contact Us</a><a href="gallery.html" aria-current="page">Gallery</a>
+      </nav>
+      <div class="nav-actions"><button class="language" aria-label="Language: English"><img src="public/uk.png" alt="UK flag"></button><a class="support" href="https://wa.me/254745342479">Support</a><a class="account-btn" href="#account">My Account</a></div>
+    </div>
+  </header>
+  <div class="safety-banner"><strong>Booking notice:</strong> photos and seat details are for browsing; confirm trips directly with our team. <a href="https://wa.me/254745342479">WhatsApp us</a></div>
+  <main class="info-main">
+    <section class="info-hero">
+      <p class="gallery-kicker">THE BUSCAR JOURNEY</p>
+      <h1>Every journey has a story.</h1>
+      <p>Explore the roads, people, and moments that make travelling together special.</p>
+    </section>
+    <section class="info-section gallery-section">
+      <div class="gallery-heading">
+        <div><span class="gallery-eyebrow">MOMENTS ON THE MOVE</span><h2>Life along the way</h2></div>
+        <p>Take a look around. When you’re ready, find a route and start planning your next trip.</p>
+      </div>
+      <div class="gallery-grid">
+        <figure class="gallery-item gallery-item--wide gallery-item--feature">
+          <button class="gallery-open" type="button" aria-label="View BUSCAR gallery photo 1"><img src="public/gallery-1.jpg" alt="BUSCAR travel moment"></button>
+          <figcaption><span>01 / ON THE ROAD</span><b>Make the miles memorable.</b></figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <button class="gallery-open" type="button" aria-label="View BUSCAR gallery photo 2"><img src="public/gallery-2.jpg" alt="A moment from the BUSCAR journey"></button>
+          <figcaption><span>02 / THE JOURNEY</span><b>See where the road takes you.</b></figcaption>
+        </figure>
+        <figure class="gallery-item gallery-item--tall">
+          <button class="gallery-open" type="button" aria-label="View BUSCAR gallery photo 3"><img src="public/gallery-3.jpg" alt="BUSCAR destination view"></button>
+          <figcaption><span>03 / DESTINATIONS</span><b>New places, closer together.</b></figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <button class="gallery-open" type="button" aria-label="View BUSCAR gallery photo 4"><img src="public/gallery-4.jpg" alt="BUSCAR travel scene"></button>
+          <figcaption><span>04 / TRAVEL</span><b>Your next chapter starts here.</b></figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <button class="gallery-open" type="button" aria-label="View BUSCAR gallery photo 5"><img src="public/gallery-5.jpg" alt="A view from a BUSCAR trip"></button>
+          <figcaption><span>05 / ALONG THE WAY</span><b>Enjoy the view.</b></figcaption>
+        </figure>
+        <figure class="gallery-item gallery-item--wide">
+          <button class="gallery-open" type="button" aria-label="View BUSCAR gallery photo 6"><img src="public/gallery-6.jpg" alt="BUSCAR road and scenery"></button>
+          <figcaption><span>06 / OPEN ROADS</span><b>More than getting there.</b></figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <button class="gallery-open" type="button" aria-label="View BUSCAR gallery photo 7"><img src="public/gallery-7.jpg" alt="BUSCAR travel experience"></button>
+          <figcaption><span>07 / TOGETHER</span><b>Good journeys are shared.</b></figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <button class="gallery-open" type="button" aria-label="View BUSCAR gallery photo 8"><img src="public/gallery-8.jpg" alt="BUSCAR destination and travel"></button>
+          <figcaption><span>08 / YOUR NEXT TRIP</span><b>Choose a route. Go further.</b></figcaption>
+        </figure>
+      </div>
+      <div class="info-actions"><a class="info-action" href="index.html#ticket">Find your route</a></div>
+    </section>
+  </main>
+  <div class="gallery-lightbox" role="dialog" aria-modal="true" aria-label="Gallery photo" aria-hidden="true">
+    <button class="gallery-lightbox-close" type="button" aria-label="Close photo">&times;</button>
+    <img src="public/gallery-1.jpg" alt="BUSCAR gallery photo">
+    <p></p>
+  </div>
+  <script src="site.js"></script><script src="auth.js"></script>
+  <script>
+    const toggle = document.querySelector('.menu-toggle'), nav = document.querySelector('.main-nav');
+    toggle.addEventListener('click', () => { const open = nav.classList.toggle('is-open'); toggle.setAttribute('aria-expanded', String(open)); });
+    const lightbox = document.querySelector('.gallery-lightbox');
+    const lightboxImage = lightbox.querySelector('img');
+    const lightboxCaption = lightbox.querySelector('p');
+    const closeLightbox = () => { lightbox.classList.remove('show'); lightbox.setAttribute('aria-hidden', 'true'); document.body.classList.remove('gallery-open'); };
+    document.querySelector('.gallery-grid').addEventListener('click', (event) => {
+      const button = event.target.closest('.gallery-open');
+      if (!button) return;
+      const image = button.querySelector('img');
+      const caption = button.parentElement.querySelector('figcaption b');
+      lightboxImage.src = image.src;
+      lightboxImage.alt = image.alt;
+      lightboxCaption.textContent = caption.textContent;
+      lightbox.classList.add('show');
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('gallery-open');
+      lightbox.querySelector('.gallery-lightbox-close').focus();
+    });
+    lightbox.querySelector('.gallery-lightbox-close').addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (event) => { if (event.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && lightbox.classList.contains('show')) closeLightbox(); });
+  </script>
+</body>
+</html>

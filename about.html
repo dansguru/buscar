@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About BUSCAR</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html" aria-label="Buscar home"><img class="brand-shield" src="public/logo-2.png" alt=""><span class="brand-text"><span class="brand-name">BUSCAR</span><span class="brand-tagline">EAGLE ABOVE THE REST</span></span></a>
+      <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html">Home</a><a href="about.html" aria-current="page">About</a><a href="ticket.html">Print Ticket</a><a href="contact.html">Contact Us</a><a href="gallery.html">Gallery</a>
+      </nav>
+      <div class="nav-actions"><button class="language" aria-label="Language: English"><img src="public/uk.png" alt="UK flag"></button><a class="support" href="https://wa.me/254745342479">Support</a><a class="account-btn" href="#account">My Account</a></div>
+    </div>
+  </header>
+  <div class="safety-banner"><strong>Book safely:</strong> trip and seat details are samples until our team confirms them on WhatsApp. <a href="https://wa.me/254745342479">Contact BUSCAR</a></div>
+  <main class="info-main">
+    <section class="info-hero">
+      <h1>Travel with confidence</h1>
+      <p>BUSCAR connects travelers with bus routes and seat information in one simple place. Explore your trip, choose a seat, then contact our team to confirm the details before making any payment.</p>
+    </section>
+    <section class="info-section">
+      <h2>About BUSCAR</h2>
+      <p>We want planning a journey to feel clear from the first search to the final confirmation. Browse available route options, review the sample seat map, and send your request to our team for manual follow-up.</p>
+      <p>This locally hosted demo uses sample schedules, fares, and seat availability. A seat is not reserved and a ticket is not issued until BUSCAR confirms it directly with you.</p>
+      <div class="info-grid">
+        <article class="info-card"><h3>Find your route</h3><p>Browse popular destinations and select a route to see trip options.</p></article>
+        <article class="info-card"><h3>Choose your seat</h3><p>Preview seat positions and send your preferred seats for confirmation.</p></article>
+        <article class="info-card"><h3>Confirm directly</h3><p>Use our WhatsApp contact to verify your details and get the correct next steps.</p></article>
+      </div>
+      <div class="info-actions"><a class="info-action" href="index.html#ticket">Search for a trip</a><a class="info-action secondary" href="contact.html">Contact BUSCAR</a></div>
+    </section>
+  </main>
+  <script src="site.js"></script><script src="auth.js"></script>
+  <script>
+    const toggle = document.querySelector('.menu-toggle'), nav = document.querySelector('.main-nav');
+    toggle.addEventListener('click', () => { const open = nav.classList.toggle('is-open'); toggle.setAttribute('aria-expanded', String(open)); });
+  </script>
+</body>
+</html>

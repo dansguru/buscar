@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BUSCAR — Eagle Above the Rest</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body data-show-safety="true">
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html" aria-label="Buscar home">
+        <img class="brand-shield" src="public/logo-2.png" alt="">
+        <span class="brand-text">
+          <span class="brand-name">BUSCAR</span>
+          <span class="brand-tagline">EAGLE ABOVE THE REST</span>
+        </span>
+      </a>
+      <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="ticket.html">Print Ticket</a>
+        <a href="contact.html">Contact Us</a>
+        <a href="gallery.html">Gallery</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="language" aria-label="Language: English">
+          <img src="public/uk.png" alt="UK flag">
+        </button>
+        <a class="support" href="#support"><span class="help-mark">?</span> Support</a>
+        <a class="account-btn" href="#account">My Account</a>
+      </div>
+    </div>
+  </header>
+  <div class="safety-banner"><strong>Due to scammers, please book safely:</strong> we confirm bookings manually on WhatsApp. Do not pay through unverified links. <a href="https://wa.me/254745342479">Chat with BUSCAR</a></div>
+
+  <main>
+    <section class="hero" aria-label="Buscar routes">
+      <div class="hero-slide is-active" style="background-image:url('public/cta-1.png')"></div>
+      <div class="hero-slide" style="background-image:url('public/hero-2.png')"></div>
+      <div class="hero-shade"></div>
+      <div class="hero-inner">
+        <div class="routes">
+          <h1>OUR ROUTES</h1>
+          <span class="route-pin pin-kampala"><b>Kampala</b></span>
+          <span class="route-pin pin-nairobi"><b>Nairobi</b></span>
+          <span class="route-pin pin-malindi"><b>Malindi</b></span>
+          <span class="route-pin pin-kilifi"><b>Kilifi</b></span>
+          <span class="route-pin pin-mpeketoni"><b>Mpeketoni</b></span>
+          <span class="route-pin pin-mombasa"><b>Mombasa</b></span>
+        </div>
+        <div class="hero-logo">
+          <img src="public/logo-2.png" alt="BUSCAR">
+        </div>
+      </div>
+    </section>
+
+    <section class="booking-shell" id="ticket" aria-label="Search for a bus">
+      <div class="booking-top">
+        <div class="trip-options">
+          <label><input type="radio" name="trip" value="one-way" checked> One Way</label>
+          <label><input type="radio" name="trip" value="round-trip"> Round Trip</label>
+        </div>
+        <p>Book your next ticket using
+          <img class="traveler-logo" src="public/logo.svg" alt="Travler">
+        </p>
+      </div>
+      <form class="booking-form" id="bookingForm">
+        <label class="booking-field">
+          <span class="field-icon">▣</span>
+          <span class="field-content"><small>FROM</small><input type="text" value="NAIROBI" aria-label="From"></span>
+        </label>
+        <label class="booking-field">
+          <span class="field-icon pin-icon">♧</span>
+          <span class="field-content"><small>TO</small><input type="text" value="MTITO ANDEI" aria-label="To"></span>
+        </label>
+        <label class="booking-field date-field">
+          <span class="field-icon">▢</span>
+          <span class="field-content"><small>TRAVEL DATE <span class="quick-dates"><button type="button" data-offset="0">Today</button><button type="button" data-offset="1">Tom</button></span></small><input type="text" id="travelDate" placeholder="Date" onfocus="(this.type='date')" aria-label="Travel date"></span>
+        </label>
+        <button class="search-btn" type="submit">SEARCH BUS</button>
+      </form>
+    </section>
+
+    <div class="content-wrap">
+      <section class="content-section" id="about">
+        <h2>Amenities</h2>
+        <p class="section-subtitle">Recognized and trusted across Kenya</p>
+        <div class="amenities-grid">
+          <article class="info-card amenity-card">
+            <img src="public/wi-fi.png" alt="Wi-Fi">
+            <p>Free Wi-Fi</p>
+          </article>
+          <article class="info-card amenity-card">
+            <img src="public/power.png" alt="Power outlet">
+            <p>Power Outlets</p>
+          </article>
+          <article class="info-card amenity-card">
+            <img src="public/seats.png" alt="Extra legroom seat">
+            <p>Extra Legroom</p>
+          </article>
+          <article class="info-card amenity-card">
+            <img src="public/vip.png" alt="VIP seating">
+            <p>VIP Seating</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content-section why-section">
+        <h2>Why Us</h2>
+        <p class="section-subtitle">Experience the best transport service in the region</p>
+        <div class="benefits-grid">
+          <article class="info-card benefit-card">
+            <div class="benefit-icon pink">♧</div>
+            <h3>Save</h3>
+            <p>Pay less when using our new Mobile App. You can save up to 25% of your Promo Cash balance in a single purchase.</p>
+          </article>
+          <article class="info-card benefit-card">
+            <div class="benefit-icon lavender">⌖</div>
+            <h3>Multiple Routes</h3>
+            <p>We cover multiple routes and the widest connectivity in Kenya.</p>
+          </article>
+          <article class="info-card benefit-card">
+            <div class="benefit-icon mint">▤</div>
+            <h3>Earn Credits</h3>
+            <p>Receive more credit during promotional periods which will be added into your Promo Cash account.</p>
+          </article>
+          <article class="info-card benefit-card">
+            <div class="benefit-icon blue">📦</div>
+            <h3>Parcel Delivery</h3>
+            <p>We Deliver parcels in all major towns in the country.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cta-carousel" aria-label="Promotions" data-steps="2">
+        <div class="cta-track">
+          <a class="cta-slide" href="#ticket"><img src="public/cta-1.png" alt="Travel to Mombasa — book your ticket"></a>
+          <a class="cta-slide" href="#app"><img src="public/cta-2.png" alt="Download our app on the Play Store"></a>
+          <a class="cta-slide" href="#ticket"><img src="public/cta-1.png" alt="Travel to Mombasa — book your ticket"></a>
+        </div>
+        <div class="cta-dots" role="tablist" aria-label="Promotion slides">
+          <button class="is-active" aria-label="Slide 1"></button>
+          <button aria-label="Slide 2"></button>
+        </div>
+      </section>
+    </div>
+
+    <section class="routes-card" id="routes" aria-label="Our routes">
+      <div class="routes-head">
+        <div class="routes-title">
+          <span class="routes-icon"><i></i></span>
+          <div>
+            <h2>Our routes</h2>
+            <p>Popular destinations our buses travel to every day</p>
+          </div>
+        </div>
+        <label class="route-search">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input type="search" id="routeSearch" placeholder="Search a route" aria-label="Search a route">
+        </label>
+      </div>
+      <div class="route-chips" id="routeChips"></div>
+      <div class="routes-more">
+        <button type="button" id="loadMore">Load more routes
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <section class="app-section" id="app" aria-label="Get the Travler app">
+      <img class="app-phone" src="public/cta-2.png" alt="Travler app">
+      <div class="app-stores">
+        <a href="#"><img class="store-google" src="public/googleapp.png" alt="Get it on Google Play"></a>
+        <a href="#"><img class="store-apple" src="public/apple.png" alt="Download on the App Store"></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="contact">
+    <div class="footer-inner">
+      <div class="footer-logos">
+        <a class="brand footer-brand" href="index.html" aria-label="Buscar home">
+          <img class="brand-shield" src="public/logo-2.png" alt="">
+          <span class="brand-text">
+            <span class="brand-name">BUSCAR</span>
+            <span class="brand-tagline">EAGLE ABOVE THE REST</span>
+          </span>
+        </a>
+        <img class="footer-travler" src="public/travler-logo.webp" alt="Travler">
+        <img class="footer-voltic" src="public/voltic-logo.svg" alt="Voltic">
+        <div class="footer-stores">
+          <a href="#"><img src="public/googleapp.png" alt="Get it on Google Play"></a>
+          <a href="#"><img src="public/apple.png" alt="Download on the App Store"></a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <a class="footer-mail" href="#contact" aria-label="Email us">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        </a>
+        <nav class="footer-links" aria-label="Footer">
+          <a href="about.html">About</a>
+          <a href="ticket.html">Print Ticket</a>
+          <a href="contact.html">Get In Touch</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="#">Terms</a>
+          <a href="#">Privacy Policy</a>
+        </nav>
+        <div class="footer-social">
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8h2.5V4.5H14C11.8 4.5 10.5 5.9 10.5 8v2H8v3.5h2.5V21H14v-7.5h2.4l.6-3.5H14V8.4c0-.3.2-.4.4-.4Z"/></svg></a>
+          <a href="#" aria-label="X"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M17.8 3h3l-6.6 7.5L22 21h-6.1l-4.8-6.3L5.6 21h-3l7.1-8.1L2.3 3h6.2l4.3 5.7L17.8 3Zm-1 16.2h1.7L7.6 4.7H5.8l11 14.5Z"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5V20M4 4.5v.5M9 20v-6.5a3.5 3.5 0 0 1 7 0V20M9 9.5V20"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a class="chat-button" href="https://wa.me/254745342479" aria-label="Chat with support">•••</a>
+
+  <script src="site.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    const menuToggle = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.main-nav');
+    menuToggle.addEventListener('click', () => {
+      const isOpen = nav.classList.toggle('is-open');
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    // Hero background slideshow (hero-1 <-> hero-2)
+    const slides = document.querySelectorAll('.hero-slide');
+    let current = 0;
+    if (slides.length > 1) {
+      setInterval(() => {
+        slides[current].classList.remove('is-active');
+        current = (current + 1) % slides.length;
+        slides[current].classList.add('is-active');
+      }, 5000);
+    }
+
+    // CTA carousel (2 banners visible, slides by one)
+    (() => {
+      const box = document.querySelector('.cta-carousel');
+      const track = box.querySelector('.cta-track');
+      const dots = box.querySelectorAll('.cta-dots button');
+      const steps = dots.length;
+      let i = 0, timer;
+      const go = (n) => {
+        i = (n + steps) % steps;
+        track.style.setProperty('--i', i);
+        dots.forEach((d, k) => d.classList.toggle('is-active', k === i));
+      };
+      const start = () => { timer = setInterval(() => go(i + 1), 4500); };
+      dots.forEach((d, k) => d.addEventListener('click', () => { clearInterval(timer); go(k); start(); }));
+      start();
+    })();
+
+    // Our routes
+    (() => {
+      const towns = ['NAIROBI','MTITO ANDEI','VOI','KALOLENI','MALINDI','MACHAKOS JUNCTION','KILIFI','GEDE','TIMBONII'];
+      const forward = {
+        'NAIROBI': ['MTITO ANDEI','VOI','KALOLENI','MALINDI','MACHAKOS JUNCTION','KILIFI','GEDE','TIMBONII'],
+        'MTITO ANDEI': ['VOI','KALOLENI','MALINDI','KILIFI','GEDE','TIMBONII'],
+        'VOI': ['KALOLENI','MALINDI','KILIFI','GEDE','TIMBONII'],
+        'KALOLENI': ['MALINDI','KILIFI','GEDE','TIMBONII'],
+        'MACHAKOS JUNCTION': ['MTITO ANDEI','VOI','KALOLENI','MALINDI','KILIFI','GEDE','TIMBONII'],
+        'KILIFI': ['MALINDI','GEDE','TIMBONII'],
+        'GEDE': ['MALINDI','TIMBONII'],
+        'TIMBONII': ['MALINDI']
+      };
+      const routes = [];
+      Object.entries(forward).forEach(([a, list]) => list.forEach(b => routes.push([a, b])));
+      ['MTITO ANDEI','VOI','KALOLENI','MALINDI','KILIFI','GEDE','TIMBONII'].forEach(a => {
+        const targets = a === 'MALINDI' ? ['NAIROBI','MTITO ANDEI','VOI','KALOLENI','KILIFI','GEDE','TIMBONII']
+          : towns.slice(0, towns.indexOf(a)).filter(t => t !== 'MACHAKOS JUNCTION' && t !== 'MALINDI');
+        targets.forEach(b => routes.push([a, b]));
+      });
+      [['NAIROBI','MOMBASA'],['NAIROBI','EASTLEIGH'],['NAIROBI','MTWAPA']].forEach(r => routes.push(r));
+
+      const chips = document.getElementById('routeChips');
+      const search = document.getElementById('routeSearch');
+      const more = document.getElementById('loadMore');
+      const PAGE = 24;
+      let shown = 48;
+      let loading = true;
+      const pin = '<svg viewBox="0 0 24 30" width="10" height="12" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M12 28C12 28 2 17 2 11a10 10 0 0 1 20 0c0 6-10 17-10 17z"/><circle cx="12" cy="11" r="3"/></svg>';
+
+      // Replace the body of this function with your real API call (fetch('/api/routes')...)
+      const fetchRoutes = () => new Promise(resolve => setTimeout(() => resolve(routes), 1400));
+
+      function skeletons(n) {
+        const frag = document.createDocumentFragment();
+        for (let k = 0; k < n; k++) {
+          const s = document.createElement('span');
+          s.className = 'route-chip skeleton';
+          s.style.setProperty('--w', (150 + ((k * 37) % 110)) + 'px');
+          frag.appendChild(s);
+        }
+        return frag;
+      }
+
+      function selectRoute(a, b) {
+        const inputs = document.querySelectorAll('#bookingForm input[type="text"]');
+        inputs[0].value = a;
+        inputs[1].value = b;
+        const shell = document.getElementById('ticket');
+        shell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        shell.classList.remove('flash');
+        void shell.offsetWidth;
+        shell.classList.add('flash');
+        setTimeout(() => document.getElementById('travelDate').focus({ preventScroll: true }), 700);
+      }
+
+      function render() {
+        chips.innerHTML = '';
+        if (loading) { chips.appendChild(skeletons(24)); more.parentElement.style.display = 'none'; return; }
+        const q = search.value.trim().toUpperCase();
+        const list = routes.filter(([a, b]) => !q || (a + ' ' + b).includes(q));
+        const recentKey = window.BuscarSite.getState().searches[0]?.key;
+        const recentRoute = recentKey ? recentKey.split('|').slice(0, 2) : [];
+        if (!q && recentRoute.length === 2) {
+          list.sort((left, right) => {
+            const leftRecent = left[0] === recentRoute[0] && left[1] === recentRoute[1];
+            const rightRecent = right[0] === recentRoute[0] && right[1] === recentRoute[1];
+            return Number(rightRecent) - Number(leftRecent);
+          });
+        }
+        const visible = q ? list : list.slice(0, shown);
+        visible.forEach(([a, b]) => {
+          const el = document.createElement('button');
+          el.type = 'button';
+          el.className = 'route-chip';
+          el.innerHTML = pin + '<span>' + a + ' → ' + b + '</span>';
+          el.addEventListener('click', () => selectRoute(a, b));
+          chips.appendChild(el);
+        });
+        more.parentElement.style.display = (q || shown >= list.length) ? 'none' : '';
+      }
+
+      more.addEventListener('click', () => {
+        more.parentElement.style.display = 'none';
+        chips.appendChild(skeletons(12));
+        setTimeout(() => { shown += PAGE; render(); }, 700);
+      });
+      search.addEventListener('input', () => { if (!loading) render(); });
+
+      render();
+      fetchRoutes().then(() => { loading = false; render(); });
+    })();
+
+    // Today / Tom quick dates
+    const dateInput = document.getElementById('travelDate');
+    const isoDate = (offset) => {
+      const d = new Date();
+      d.setDate(d.getDate() + offset);
+      const p = (n) => String(n).padStart(2, '0');
+      return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+    };
+    document.querySelectorAll('.quick-dates button').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        dateInput.type = 'date';
+        dateInput.value = isoDate(Number(btn.dataset.offset));
+        document.querySelectorAll('.quick-dates button').forEach((b) => b.classList.toggle('is-on', b === btn));
+      });
+    });
+
+    // Search -> results.html
+    document.getElementById('bookingForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const [fromEl, toEl] = document.querySelectorAll('#bookingForm input[type="text"]:not(#travelDate)');
+      const from = fromEl.value.trim().toUpperCase();
+      const to = toEl.value.trim().toUpperCase();
+      if (!from || !to) { (from ? toEl : fromEl).focus(); return; }
+      const date = (dateInput.type === 'date' && dateInput.value) ? dateInput.value : isoDate(0);
+      const trip = document.querySelector('input[name="trip"]:checked').value;
+      const variant = window.BuscarSite.recordSearch(from, to, date);
+      const params = new URLSearchParams({ from, to, date, trip, variant: String(variant) });
+      window.location.href = 'results.html?' + params.toString();
+    });
+  </script>
+</body>
+</html>

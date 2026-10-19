@@ -1,0 +1,171 @@
+/* ==========================================================
+   auth.css — sign-in dialog + sign-up page
+   Needs styles.css (variables, header). Load after it.
+   ========================================================== */
+
+.nav-actions { position: relative; }
+
+/* ---------- Dialog ---------- */
+.auth-backdrop {
+  position: fixed; inset: 0; z-index: 100;
+  display: none; align-items: center; justify-content: center;
+  padding: 16px; background: rgba(0,0,0,.5);
+  overflow-y: auto;
+}
+.auth-backdrop.show { display: flex; }
+body.auth-open { overflow: hidden; }
+
+.auth-dialog {
+  position: relative; width: 398px; max-width: 100%;
+  margin: auto; padding: 22px 14px 18px;
+  background: #fff; border-radius: 16px;
+  font-family: Lato, Inter, sans-serif; color: #111;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  animation: authIn .22s ease-out;
+}
+@keyframes authIn { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+
+.auth-close { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border: 0; border-radius: 50%; background: transparent; color: #444; cursor: pointer; display: grid; place-items: center; }
+.auth-close:hover { background: #f0f0f0; }
+
+.auth-logo { display: block; width: 162px; height: 170px; margin: 30px auto 4px; object-fit: contain; }
+.auth-title { margin: 0 0 12px; text-align: center; font: 500 13px/1 Lato, Inter, sans-serif; letter-spacing: .2px; }
+
+.auth-dialog label { display: block; font: 500 11.5px/1 Lato, Inter, sans-serif; color: #333; }
+.auth-row { display: grid; grid-template-columns: 87px 1fr; margin-bottom: 14px; }
+.auth-row label > span, .auth-field > span { display: block; margin-bottom: 8px; }
+.auth-row label:first-child > span { margin-bottom: 8px; }
+
+.auth-dialog select, .auth-dialog input[type="tel"], .auth-dialog input[type="password"], .auth-dialog input[type="text"] {
+  width: 100%; height: 44px; padding: 0 12px;
+  border: 1px solid #dcdcdc; background: #fff; color: #111;
+  font: 400 14px Lato, Inter, sans-serif; outline: 0;
+}
+.auth-dialog select { border-radius: 8px 0 0 8px; appearance: none; padding-right: 26px; cursor: pointer;
+  background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23222' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>") no-repeat right 8px center; }
+.auth-dialog input[type="tel"] { border-radius: 0 8px 8px 0; border-left: 0; }
+.auth-dialog select:focus, .auth-dialog input:focus { border-color: #111; position: relative; z-index: 1; }
+.auth-dialog input::placeholder { color: #8b8b8b; }
+
+.auth-pass { display: flex; align-items: stretch; margin-top: 8px; }
+.auth-pass .lock, .auth-pass .eye { width: 36px; flex: 0 0 36px; display: grid; place-items: center; border: 1px solid #dcdcdc; background: #fff; color: #555; }
+.auth-pass .lock { border-right: 0; border-radius: 8px 0 0 8px; background: #f7f7f7; }
+.auth-pass .eye { border-left: 0; border-radius: 0 8px 8px 0; cursor: pointer; padding: 0; }
+.auth-pass .eye:hover { color: #111; }
+.auth-pass input { border-radius: 0 !important; }
+
+.auth-meta { display: flex; align-items: center; justify-content: space-between; margin: 16px 0 12px; }
+.auth-check { display: inline-flex !important; align-items: center; gap: 8px; cursor: pointer; font-size: 11px !important; font-weight: 600 !important; }
+.auth-check input { width: 14px; height: 14px; margin: 0; accent-color: #111; }
+.auth-meta a { font: 500 13px Lato, Inter, sans-serif; }
+.auth-meta a:hover { color: var(--red); }
+
+.auth-error { min-height: 0; margin: 0 0 8px; color: #c4202a; font: 600 12px/1.3 Lato, Inter, sans-serif; text-align: center; }
+.auth-error:empty { display: none; }
+
+.auth-primary, .auth-ghost {
+  display: block; width: 100%; height: 36px; border-radius: 99px;
+  font: 700 11.5px Lato, Inter, sans-serif; cursor: pointer;
+}
+.auth-primary { border: 0; background: linear-gradient(90deg, #1c1c1c, #3d3d3d); color: #fff; }
+.auth-primary:hover { background: #353535; }
+.auth-ghost { border: 1px solid #111; background: #fff; color: #111; }
+.auth-ghost:hover { background: #111; color: #fff; }
+
+.auth-or { display: flex; align-items: center; gap: 10px; margin: 14px 0; }
+.auth-or::before, .auth-or::after { content: ''; flex: 1; height: 1px; background: #cfcfcf; }
+.auth-or span { color: #a71920; font: 700 11px Lato, Inter, sans-serif; letter-spacing: .1px; }
+
+.auth-foot { margin: 14px 0 0; text-align: center; font: 500 13px Lato, Inter, sans-serif; }
+.auth-foot a { text-decoration: none; }
+.auth-foot a:hover { color: var(--red); }
+
+/* ---------- Account menu (after login) ---------- */
+.account-menu {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 60;
+  min-width: 190px; padding: 6px;
+  background: #fff; border: 1px solid #e3e3e3; border-radius: 12px; box-shadow: 0 10px 28px rgba(0,0,0,.14);
+  font-family: Lato, Inter, sans-serif; display: none;
+}
+.account-menu.show { display: block; }
+.account-menu p { margin: 0; padding: 8px 10px; font-size: 11.5px; color: #666; border-bottom: 1px solid #eee; }
+.account-menu p b { display: block; margin-top: 3px; color: #111; font-size: 13px; }
+.account-menu button { width: 100%; padding: 9px 10px; border: 0; border-radius: 8px; background: transparent; text-align: left; font: 700 12.5px Lato, Inter, sans-serif; cursor: pointer; }
+.account-menu button:hover { background: #f3f3f3; }
+
+/* ---------- Sign-up page ---------- */
+.signup-main { width: min(540px, calc(100% - 36px)); margin: 0 auto; padding: 62px 0 70px; font-family: Lato, Inter, sans-serif; color: #111; }
+.signup-logo { display: block; width: 162px; height: 170px; margin: 0 auto; object-fit: contain; animation: signup-enter .65s cubic-bezier(.2,.75,.25,1) both; }
+.signup-main h1 { margin: 0 0 22px; text-align: center; font: 400 26px/1.1 Lato, Inter, sans-serif; color: #222; animation: signup-enter .55s .08s cubic-bezier(.2,.75,.25,1) both; }
+
+.signup-form { display: grid; gap: 14px; }
+.signup-form > * { animation: signup-enter .48s cubic-bezier(.2,.75,.25,1) both; }
+.signup-form > :nth-child(1) { animation-delay: .08s; }
+.signup-form > :nth-child(2) { animation-delay: .13s; }
+.signup-form > :nth-child(3) { animation-delay: .18s; }
+.signup-form > :nth-child(4) { animation-delay: .23s; }
+.signup-form > :nth-child(5) { animation-delay: .28s; }
+.signup-form > :nth-child(6) { animation-delay: .33s; }
+.signup-form > :nth-child(7) { animation-delay: .38s; }
+.signup-form > :nth-child(8) { animation-delay: .43s; }
+.signup-form > :nth-child(9) { animation-delay: .48s; }
+.signup-form > :nth-child(10) { animation-delay: .53s; }
+
+@keyframes signup-enter {
+  from { opacity:  0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes signup-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.su-row { display: grid; gap: 14px; }
+.su-row.code-phone { grid-template-columns: 111px 1fr; }
+.su-row.two { grid-template-columns: 1fr 1fr; }
+.signup-form label > span { display: block; margin-bottom: 7px; font: 500 13px/1 Lato, Inter, sans-serif; color: #222; }
+.signup-form input[type="text"], .signup-form input[type="email"], .signup-form input[type="tel"],
+.signup-form input[type="password"], .signup-form input[type="date"], .signup-form select {
+  width: 100%; height: 37px; padding: 0 11px;
+  border: 1px solid #dfe3e8; border-radius: 6px; background: #f6f7f9; color: #222;
+  font: 400 13px Lato, Inter, sans-serif; outline: 0;
+  transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.signup-form select { appearance: none; padding-right: 30px; background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23444' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>") no-repeat right 10px center; cursor: pointer; }
+.signup-form input:focus, .signup-form select:focus { border-color: #a71920; background-color: #fff; box-shadow: 0 0 0 3px rgba(167,25,32,.12); transform: translateY(-1px); }
+.signup-form input::placeholder { color: #8b95a3; }
+.signup-form .invalid { border-color: #c4202a !important; animation: signup-shake .28s ease-in-out; }
+
+.su-pass { position: relative; }
+.su-pass input { padding-right: 36px !important; }
+.su-pass .eye { position: absolute; right: 0; top: 0; width: 36px; height: 37px; border: 0; background: transparent; color: #666; cursor: pointer; display: grid; place-items: center; transition: color .18s ease, transform .18s ease; }
+.su-pass .eye:hover { color: #111; transform: scale(1.08); }
+
+.su-terms { display: flex !important; align-items: center; gap: 9px; margin-top: 2px; font: 500 13px Lato, Inter, sans-serif; color: #222; cursor: pointer; }
+.su-terms input { width: 18px; height: 18px; margin: 0; accent-color: #111; border-radius: 4px; }
+.su-terms a { text-decoration: underline; }
+
+.su-error { margin: 0; color: #c4202a; font: 600 12.5px/1.3 Lato, Inter, sans-serif; text-align: center; }
+.su-error:empty { display: none; }
+
+.su-submit { height: 49px; border: 0; border-radius: 99px; background: linear-gradient(90deg, #1c1c1c, #444); color: #fff; font: 700 13px Lato, Inter, sans-serif; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease; }
+.su-submit:hover { background: #353535; transform: translateY(-2px); box-shadow: 0 7px 16px rgba(0,0,0,.18); }
+.su-submit:active { transform: translateY(0); box-shadow: none; }
+.su-foot { margin: 4px 0 0; text-align: center; font: 500 13px Lato, Inter, sans-serif; }
+.su-foot a { font-weight: 800; text-decoration: underline; }
+.su-foot a:hover { color: var(--red); }
+
+@media (max-width: 560px) {
+  .signup-main { padding-top: 30px; }
+  .su-row.two { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

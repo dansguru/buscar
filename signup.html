@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign up — BUSCAR</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+  <header class="site-header" style="border-bottom:1px solid #e9e9e9">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html" aria-label="Buscar home">
+        <img class="brand-shield" src="public/logo-2.png" alt="">
+        <span class="brand-text">
+          <span class="brand-name">BUSCAR</span>
+          <span class="brand-tagline">EAGLE ABOVE THE REST</span>
+        </span>
+      </a>
+      <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="ticket.html">Print Ticket</a>
+        <a href="contact.html">Contact Us</a>
+        <a href="gallery.html">Gallery</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="language" aria-label="Language: English">
+          <img src="public/uk.png" alt="UK flag">
+        </button>
+        <a class="support" href="https://wa.me/254745342479"><span class="help-mark">?</span> Support</a>
+        <a class="account-btn" href="#account">My Account</a>
+      </div>
+    </div>
+  </header>
+  <div class="safety-banner"><strong>Book safely:</strong> we confirm trips and payment details manually on WhatsApp. <a href="https://wa.me/254745342479">Contact BUSCAR</a></div>
+
+  <main class="signup-main">
+    <img class="signup-logo" src="public/logo-2.png" alt="BUSCAR">
+    <h1>Sign up</h1>
+
+    <form class="signup-form" id="signupForm" novalidate>
+      <label><span>Name</span>
+        <input type="text" name="name" placeholder="Enter your name" autocomplete="name">
+      </label>
+
+      <div class="su-row code-phone">
+        <label><span>Code</span>
+          <select name="code"><option value="">Select ...</option></select>
+        </label>
+        <label><span>Phone</span>
+          <input type="tel" name="phone" inputmode="numeric" placeholder="Enter your phone number" autocomplete="tel-national">
+        </label>
+      </div>
+
+      <label><span>Email</span>
+        <input type="email" name="email" placeholder="Enter your email" autocomplete="email">
+      </label>
+
+      <div class="su-row two">
+        <label><span>Gender</span>
+          <select name="gender">
+            <option value="">Select Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+            <option>Prefer not to say</option>
+          </select>
+        </label>
+        <label><span>Date of Birth</span>
+          <input type="date" name="dob">
+        </label>
+      </div>
+
+      <div class="su-row two">
+        <label><span>Password</span>
+          <div class="su-pass">
+            <input type="password" name="password" placeholder="Enter password" autocomplete="new-password">
+            <button class="eye" type="button" aria-label="Show password" data-for="password"></button>
+          </div>
+        </label>
+        <label><span>Confirm Password</span>
+          <div class="su-pass">
+            <input type="password" name="confirm" placeholder="Confirm password" autocomplete="new-password">
+            <button class="eye" type="button" aria-label="Show password" data-for="confirm"></button>
+          </div>
+        </label>
+      </div>
+
+      <label class="su-terms">
+        <input type="checkbox" name="terms"> <span style="margin:0">I agree to the <a href="#terms">terms and conditions</a></span>
+      </label>
+
+      <p class="su-error" id="suError" role="alert"></p>
+      <button class="su-submit" type="submit">Sign Up</button>
+      <p class="su-foot">Already have an account? <a href="index.html?signin=1" class="js-open-signin">Sign in</a></p>
+    </form>
+  </main>
+
+  <script src="site.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    /* header menu */
+    const menuToggle = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.main-nav');
+    menuToggle.addEventListener('click', () => {
+      const isOpen = nav.classList.toggle('is-open');
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    const form = document.getElementById('signupForm');
+    const err = document.getElementById('suError');
+
+    /* country codes (shared with the dialog) */
+    const codeSel = form.code;
+    window.BuscarAuth.codes.forEach((c) => codeSel.add(new Option(c, c)));
+    codeSel.value = '254';
+
+    /* date of birth: no future dates, must be at least 13 */
+    const today = new Date();
+    const iso = (d) => d.toISOString().slice(0, 10);
+    form.dob.max = iso(new Date(today.getFullYear() - 13, today.getMonth(), today.getDate()));
+
+    /* eye toggles */
+    const eye = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+    form.querySelectorAll('.eye').forEach((b) => {
+      b.innerHTML = eye;
+      b.addEventListener('click', () => {
+        const input = form[b.dataset.for];
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        b.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      });
+    });
+
+    /* submit — DEMO: any valid-looking details create the account and sign in */
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      form.querySelectorAll('.invalid').forEach((el) => el.classList.remove('invalid'));
+      const bad = (el, msg) => { el.classList.add('invalid'); err.textContent = msg; el.focus(); };
+
+      const v = Object.fromEntries(new FormData(form));
+      const phone = (v.phone || '').replace(/\D/g, '');
+
+      if (!v.name.trim()) return bad(form.name, 'Enter your name.');
+      if (!v.code) return bad(form.code, 'Select a country code.');
+      if (!phone) return bad(form.phone, 'Enter your phone number.');
+      if (!/^\S+@\S+\.\S+$/.test(v.email)) return bad(form.email, 'Enter a valid email address.');
+      if (!v.gender) return bad(form.gender, 'Select your gender.');
+      if (!v.dob) return bad(form.dob, 'Enter your date of birth.');
+      if (!v.password) return bad(form.password, 'Enter a password.');
+      if (v.password !== v.confirm) return bad(form.confirm, 'Passwords do not match.');
+      if (!form.terms.checked) { err.textContent = 'Please accept the terms and conditions.'; return; }
+
+      err.textContent = '';
+      // TODO: POST to your API here instead of signing in directly
+      window.BuscarAuth.login({
+        guest: false, name: v.name.trim(), code: v.code, phone, email: v.email, gender: v.gender, dob: v.dob
+      }, true).then(() => { location.href = 'index.html'; });
+    });
+  </script>
+</body>
+</html>
