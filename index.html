@@ -72,15 +72,19 @@
       <form class="booking-form" id="bookingForm">
         <label class="booking-field">
           <span class="field-icon">▣</span>
-          <span class="field-content"><small>FROM</small><input type="text" value="NAIROBI" aria-label="From"></span>
+          <span class="field-content"><small>FROM</small><input type="text" value="NAIROBI" aria-label="From" required></span>
         </label>
         <label class="booking-field">
           <span class="field-icon pin-icon">♧</span>
-          <span class="field-content"><small>TO</small><input type="text" value="MTITO ANDEI" aria-label="To"></span>
+          <span class="field-content"><small>TO</small><input type="text" value="MTITO ANDEI" aria-label="To" required></span>
         </label>
         <label class="booking-field date-field">
           <span class="field-icon">▢</span>
-          <span class="field-content"><small>TRAVEL DATE <span class="quick-dates"><button type="button" data-offset="0">Today</button><button type="button" data-offset="1">Tom</button></span></small><input type="text" id="travelDate" placeholder="Date" onfocus="(this.type='date')" aria-label="Travel date"></span>
+          <span class="field-content"><small>TRAVEL DATE <span class="quick-dates"><button type="button" data-offset="0">Today</button><button type="button" data-offset="1">Tom</button></span></small><input type="text" id="travelDate" placeholder="Date" onfocus="(this.type='date')" aria-label="Travel date" required></span>
+        </label>
+        <label class="booking-field date-field return-date-field" id="returnDateField" hidden>
+          <span class="field-icon">↩</span>
+          <span class="field-content"><small>RETURN DATE</small><input type="date" id="returnDate" aria-label="Return date"></span>
         </label>
         <button class="search-btn" type="submit">SEARCH BUS</button>
       </form>
@@ -330,17 +334,47 @@
 
     // Today / Tom quick dates
     const dateInput = document.getElementById('travelDate');
+    const returnDateInput = document.getElementById('returnDate');
+    const returnDateField = document.getElementById('returnDateField');
+    const bookingForm = document.getElementById('bookingForm');
     const isoDate = (offset) => {
       const d = new Date();
       d.setDate(d.getDate() + offset);
       const p = (n) => String(n).padStart(2, '0');
       return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
     };
+    const addDays = (date, days) => {
+      const [year, month, day] = date.split('-').map(Number);
+      const value = new Date(year, month - 1, day);
+      value.setDate(value.getDate() + days);
+      return [value.getFullYear(), String(value.getMonth() + 1).padStart(2, '0'), String(value.getDate()).padStart(2, '0')].join('-');
+    };
+    function syncReturnDate(minimum, chooseNextDay) {
+      returnDateInput.min = minimum;
+      if (chooseNextDay && !returnDateInput.value) returnDateInput.value = addDays(minimum, 1);
+      if (returnDateInput.value && returnDateInput.value < minimum) returnDateInput.value = minimum;
+    }
+    function syncTripType() {
+      const roundTrip = document.querySelector('input[name="trip"]:checked').value === 'round-trip';
+      returnDateField.hidden = !roundTrip;
+      returnDateInput.required = roundTrip;
+      bookingForm.classList.toggle('is-round-trip', roundTrip);
+      if (roundTrip) {
+        const outboundDate = dateInput.type === 'date' && dateInput.value ? dateInput.value : isoDate(0);
+        syncReturnDate(outboundDate, true);
+      }
+    }
+    document.querySelectorAll('input[name="trip"]').forEach((radio) => radio.addEventListener('change', syncTripType));
+    dateInput.addEventListener('change', () => {
+      const outboundDate = dateInput.value || isoDate(0);
+      syncReturnDate(outboundDate, false);
+    });
     document.querySelectorAll('.quick-dates button').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         dateInput.type = 'date';
         dateInput.value = isoDate(Number(btn.dataset.offset));
+        syncReturnDate(dateInput.value, false);
         document.querySelectorAll('.quick-dates button').forEach((b) => b.classList.toggle('is-on', b === btn));
       });
     });
@@ -354,8 +388,16 @@
       if (!from || !to) { (from ? toEl : fromEl).focus(); return; }
       const date = (dateInput.type === 'date' && dateInput.value) ? dateInput.value : isoDate(0);
       const trip = document.querySelector('input[name="trip"]:checked').value;
+      const returnDate = returnDateInput.value;
+      if (trip === 'round-trip' && (!returnDate || returnDate < date)) {
+        returnDateInput.min = date;
+        returnDateInput.focus();
+        return;
+      }
       const variant = window.BuscarSite.recordSearch(from, to, date);
-      const params = new URLSearchParams({ from, to, date, trip, variant: String(variant) });
+      const search = { from, to, date, trip, variant: String(variant) };
+      if (trip === 'round-trip') search.returnDate = returnDate;
+      const params = new URLSearchParams(search);
       window.location.href = 'results.html?' + params.toString();
     });
   </script>

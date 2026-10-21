@@ -99,13 +99,24 @@
       </div>
     </div>
 
-    <div class="results-head">
-      <span>Search Result</span>
-      <span id="foundCount">&nbsp;</span>
-    </div>
+    <div class="results-head" id="resultsHeading">Available Trips</div>
+    <section class="itinerary-summary" id="itinerarySummary" aria-live="polite" hidden>
+      <div><span>Outbound</span><strong id="outboundSelectionText">Choose a bus and seats</strong><b id="outboundFareText">KES 0</b></div>
+      <div id="returnSummaryRow"><span>Return</span><strong id="returnSelectionText">Choose a return bus and seats</strong><b id="returnFareText">KES 0</b></div>
+      <div class="itinerary-total"><span>Round-trip total</span><b id="combinedFareText">KES 0</b></div>
+    </section>
 
     <div class="results-layout" id="layout">
-      <div id="tripList" aria-live="polite"></div>
+      <div class="results-trips" id="resultsTrips">
+        <section class="leg-results">
+          <div class="leg-heading"><div><h2>Outbound <span id="outboundRoute"></span></h2><p id="outboundDate"></p></div><span class="leg-count" id="foundCount">&nbsp;</span></div>
+          <div id="tripList" aria-live="polite"></div>
+        </section>
+        <section class="leg-results" id="returnLegSection" hidden>
+          <div class="leg-heading"><div><h2>Return <span id="returnRoute"></span></h2><p id="returnDateText"></p></div><span class="leg-count" id="returnFoundCount"></span></div>
+          <div id="returnTripList" aria-live="polite"></div>
+        </section>
+      </div>
 
       <!-- Seat selection: side panel on desktop, bottom sheet on mobile -->
       <aside class="seat-panel" id="seatPanel" aria-label="Seat selection" aria-hidden="true">
@@ -129,28 +140,29 @@
 
           <section class="sel-summary">
             <h3>Selected Seats</h3>
+            <p class="required-note">All booking details are required. Enter “None” when a detail does not apply.</p>
             <div id="selList" class="sel-list"><span class="none">No seats selected</span></div>
             <div class="points">
-              <label>Boarding Point
-                <select id="boardSel"></select>
+              <label>Boarding Point <span class="required-mark">Required</span>
+                <select id="boardSel" required aria-required="true"></select>
               </label>
-              <label>Dropping Point
-                <select id="dropSel"></select>
+              <label>Alighting Point <span class="required-mark">Required</span>
+                <select id="dropSel" required aria-required="true"></select>
               </label>
-              <label>Passenger Name
-                <input id="passengerName" type="text" autocomplete="name" placeholder="Name for this booking">
+              <label>Passenger Name <span class="required-mark">Required</span>
+                <input id="passengerName" type="text" autocomplete="name" required aria-required="true" placeholder="Enter passenger's full name">
               </label>
-              <label>Mobile Number
-                <input id="passengerPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Number BUSCAR can reach">
+              <label>Mobile Number <span class="required-mark">Required</span>
+                <input id="passengerPhone" type="tel" inputmode="tel" autocomplete="tel" required aria-required="true" placeholder="Number BUSCAR can reach">
               </label>
-              <label>ID / Passport (optional)
-                <input id="passengerId" type="text" autocomplete="off" maxlength="40" placeholder="ID or passport number">
+              <label>ID / Passport <span class="required-mark">Required</span>
+                <input id="passengerId" type="text" autocomplete="off" maxlength="40" required aria-required="true" placeholder="Enter ID or passport number">
               </label>
-              <label>Luggage Allowance (optional)
-                <input id="luggageNote" type="text" maxlength="100" placeholder="No heavy luggage">
+              <label>Luggage Allowance <span class="required-mark">Required</span>
+                <input id="luggageNote" type="text" maxlength="100" required aria-required="true" placeholder="Enter allowance or type None">
               </label>
-              <label>Special Medical Needs (optional)
-                <input id="medicalNote" type="text" maxlength="160" placeholder="None specified">
+              <label>Special Medical Needs <span class="required-mark">Required</span>
+                <input id="medicalNote" type="text" maxlength="160" required aria-required="true" placeholder="Enter needs or type None">
               </label>
             </div>
           </section>
@@ -179,13 +191,21 @@
     const FROM = (params.get('from') || '').toUpperCase();
     const TO = (params.get('to') || '').toUpperCase();
     const DATE = params.get('date') || '';
+    const RETURN_DATE = params.get('returnDate') || '';
     const TRIP_TYPE = (params.get('trip') || 'one-way').toLowerCase() === 'round-trip' ? 'Round-Trip' : 'One-Way';
+    const IS_ROUND_TRIP = TRIP_TYPE === 'Round-Trip' && !!RETURN_DATE && RETURN_DATE >= DATE;
     const VARIANT = Math.max(0, Number.parseInt(params.get('variant') || '0', 10) || 0);
 
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-    document.getElementById('routeTitle').textContent = FROM && TO ? FROM + ' - ' + TO : 'Choose a route';
-    document.getElementById('routeDate').textContent = DATE || '';
+    document.getElementById('routeTitle').textContent = FROM && TO ? (IS_ROUND_TRIP ? FROM + ' ↔ ' + TO : FROM + ' - ' + TO) : 'Choose a route';
+    document.getElementById('routeDate').textContent = IS_ROUND_TRIP ? DATE + ' · Return ' + RETURN_DATE : DATE;
+    document.getElementById('outboundRoute').textContent = FROM + ' to ' + TO;
+    document.getElementById('outboundDate').textContent = 'Travel date: ' + (DATE || 'Not specified');
+    document.getElementById('returnRoute').textContent = TO + ' to ' + FROM;
+    document.getElementById('returnDateText').textContent = 'Travel date: ' + (RETURN_DATE || '');
+    document.getElementById('returnLegSection').hidden = !IS_ROUND_TRIP;
+    document.getElementById('itinerarySummary').hidden = !IS_ROUND_TRIP;
     document.title = (FROM && TO ? FROM + ' → ' + TO + ' — ' : '') + 'BUSCAR';
 
     /* ---------- Sample data (replace getTrips() with your API call) ---------- */
@@ -211,15 +231,15 @@
       // Stable per-browser demo availability, so a reload never reshuffles the map.
       const order = SEAT_IDS.slice().sort((a, b) => hash(a + trip.id + seed) - hash(b + trip.id + seed));
       const free = new Set(order.slice(0, trip.seatsLeft));
-      const saved = window.BuscarSite.getState().selections[[FROM, TO, DATE, trip.id].join('|')];
+      const saved = window.BuscarSite.getState().selections[selectionKey(trip)];
       if (saved && Array.isArray(saved.seats)) saved.seats.forEach((id) => free.add(id));
       const seats = {};
       SEAT_IDS.forEach((id) => { seats[id] = { type: seatType(id), free: free.has(id) }; });
       return seats;
     }
 
-    function makeTrips(from, to) {
-      const seed = hash([sessionSeed, from, to, DATE, VARIANT].join('|'));
+    function makeTrips(from, to, travelDate, leg) {
+      const seed = hash([sessionSeed, from, to, travelDate, VARIANT, leg].join('|'));
       const count = 2 + (seed % 3);
       const trips = [];
       for (let i = 0; i < count; i++) {
@@ -227,11 +247,11 @@
         const dep = DEPARTURES[s % DEPARTURES.length];
         const dur = 240 + (s % 330);
         const t = {
-          id: 'T' + s.toString(36).toUpperCase(),
+          id: 'T' + (leg === 'return' ? 'R' : 'O') + s.toString(36).toUpperCase(),
           type: ['45 SEATER A', '45 SEATER B', '45 SEATER EXECUTIVE'][s % 3],
           badge: ['Highway', 'Express', 'Coastal'][Math.floor(s / 3) % 3],
           code: code(from) + ' - ' + code(to),
-          from, to,
+          from, to, date: travelDate, leg,
           boarding: from + (s % 2 ? ' Main Stage' : ' Bus Terminal'),
           dropping: to + (s % 3 ? ' CBD' : ' Terminal'),
           depMins: dep,
@@ -252,14 +272,20 @@
     }
 
     // TODO: swap for fetch('/api/trips?from=..&to=..&date=..').then(r => r.json())
-    const getTrips = () => new Promise((resolve) => setTimeout(() => resolve(makeTrips(FROM, TO)), 850));
+    const getTrips = () => new Promise((resolve) => setTimeout(() => resolve({
+      outbound: makeTrips(FROM, TO, DATE, 'outbound'),
+      returning: IS_ROUND_TRIP ? makeTrips(TO, FROM, RETURN_DATE, 'return') : []
+    }), 850));
 
     /* ---------- State ---------- */
     const list = document.getElementById('tripList');
+    const returnList = document.getElementById('returnTripList');
+    const resultsTrips = document.getElementById('resultsTrips');
     const layout = document.getElementById('layout');
     const panel = document.getElementById('seatPanel');
     const backdrop = document.getElementById('backdrop');
     const foundEl = document.getElementById('foundCount');
+    const returnFoundEl = document.getElementById('returnFoundCount');
     const money = (n) => Number(n).toLocaleString('en-US');
     const isMobile = () => window.matchMedia('(max-width: 860px)').matches;
     const MAX_SEATS = 6;
@@ -267,7 +293,17 @@
     let allTrips = [];
     let openId = null;
     const selections = {};
-    const selectionKey = (id) => [FROM, TO, DATE, id].join('|');
+    const selectionKey = (tripOrId) => {
+      const t = typeof tripOrId === 'string' ? allTrips.find((trip) => trip.id === tripOrId) : tripOrId;
+      return t ? [FROM, TO, DATE, RETURN_DATE, t.leg, t.date, t.id].join('|') : [FROM, TO, DATE, RETURN_DATE, tripOrId].join('|');
+    };
+    const passengerKey = [FROM, TO, DATE, RETURN_DATE, 'passenger'].join('|');
+    const savedPassenger = window.BuscarSite.getState().selections[passengerKey] || {};
+    const passengerInfo = {
+      name: savedPassenger.name || '', phone: savedPassenger.phone || '', idNumber: savedPassenger.idNumber || '',
+      luggage: savedPassenger.luggage || '', medical: savedPassenger.medical || ''
+    };
+    const savePassengerInfo = () => window.BuscarSite.saveSelection(passengerKey, { ...passengerInfo });
     const sel = (id) => {
       if (!selections[id]) {
         const saved = window.BuscarSite.getState().selections[selectionKey(id)] || {};
@@ -296,8 +332,12 @@
     /* ---------- Trip cards ---------- */
     function skeletonCards(n = 3) {
       list.setAttribute('aria-busy', 'true');
-      list.innerHTML = Array.from({ length: n }, () => '<div class="trip-card skeleton-card" aria-hidden="true"><span class="sk sk-logo"></span><span class="sk sk-line w1"></span><span class="sk sk-line w2"></span><span class="sk sk-line w3"></span><span class="sk sk-btn"></span></div>').join('');
+      returnList.setAttribute('aria-busy', 'true');
+      const skeleton = Array.from({ length: n }, () => '<div class="trip-card skeleton-card" aria-hidden="true"><span class="sk sk-logo"></span><span class="sk sk-line w1"></span><span class="sk sk-line w2"></span><span class="sk sk-line w3"></span><span class="sk sk-btn"></span></div>').join('');
+      list.innerHTML = skeleton;
+      returnList.innerHTML = IS_ROUND_TRIP ? skeleton : '';
       foundEl.textContent = 'Loading buses…';
+      returnFoundEl.textContent = IS_ROUND_TRIP ? 'Loading return buses…' : '';
     }
 
     function totalFor(t) {
@@ -305,12 +345,27 @@
       sel(t.id).seats.forEach((id) => { sum += t.fares[FARE_KEY[t.seats[id].type]]; });
       return sum;
     }
+    const chosenTripForLeg = (leg) => allTrips.find((trip) => trip.leg === leg && sel(trip.id).seats.size > 0);
+    function roundTripTotal() {
+      const outbound = chosenTripForLeg('outbound'), returning = chosenTripForLeg('return');
+      return (outbound ? totalFor(outbound) : 0) + (returning ? totalFor(returning) : 0);
+    }
+    function updateItinerarySummary() {
+      if (!IS_ROUND_TRIP) return;
+      const outbound = chosenTripForLeg('outbound'), returning = chosenTripForLeg('return');
+      document.getElementById('outboundSelectionText').textContent = outbound ? `${outbound.from} → ${outbound.to} · ${sel(outbound.id).seats.size} seat(s)` : 'Choose an outbound bus and seats';
+      document.getElementById('returnSelectionText').textContent = returning ? `${returning.from} → ${returning.to} · ${sel(returning.id).seats.size} seat(s)` : 'Choose a return bus and seats';
+      document.getElementById('outboundFareText').textContent = 'KES ' + money(outbound ? totalFor(outbound) : 0);
+      document.getElementById('returnFareText').textContent = 'KES ' + money(returning ? totalFor(returning) : 0);
+      document.getElementById('combinedFareText').textContent = 'KES ' + money(roundTripTotal());
+    }
     const cardPrice = (t) => (sel(t.id).seats.size ? totalFor(t) : t.fares.Vip);
 
     function cardHTML(t) {
       const open = t.id === openId;
+      const hasSelection = sel(t.id).seats.size > 0;
       return `
-      <article class="trip-card${open ? ' is-open' : ''}" data-id="${esc(t.id)}">
+      <article class="trip-card${open ? ' is-open' : ''}${hasSelection ? ' has-selection' : ''}" data-id="${esc(t.id)}">
         <div class="ribbon"><span>${esc(t.badge)}</span></div>
         <div class="t-logo"><img src="public/logo-2.png" alt="BUSCAR"></div>
         <div class="t-type">${esc(t.type)}</div>
@@ -332,7 +387,7 @@
           ${Object.entries(t.fares).map(([k, v]) => `<div>${esc(k)}: <b>${money(v)}</b></div>`).join('')}
         </div>
         <div class="price-one">${money(cardPrice(t))}</div>
-        <button class="view-seats" type="button" data-id="${esc(t.id)}" aria-expanded="${open}">${open ? 'Close' : 'View Seats'}</button>
+        <button class="view-seats" type="button" data-id="${esc(t.id)}" aria-expanded="${open}">${open ? 'Close' : hasSelection ? 'Selected' : 'View Seats'}</button>
       </article>`;
     }
 
@@ -376,11 +431,16 @@
     function renderTrips() {
       const trips = applyFilters();
       list.removeAttribute('aria-busy');
-      foundEl.textContent = trips.length + ' Found';
+      returnList.removeAttribute('aria-busy');
+      const outbound = trips.filter((t) => t.leg === 'outbound');
+      const returning = trips.filter((t) => t.leg === 'return');
+      foundEl.textContent = outbound.length + ' Found';
+      returnFoundEl.textContent = IS_ROUND_TRIP ? returning.length + ' Found' : '';
       if (openId && !trips.some((t) => t.id === openId)) closeSeats();
-      list.innerHTML = trips.length
-        ? trips.map(cardHTML).join('')
-        : '<div class="empty">No buses match your search. Try changing the filters or <a href="index.html#ticket">modify your trip</a>.</div>';
+      const empty = '<div class="empty">No buses match this leg. Try changing the filters or <a href="index.html#ticket">modify your trip</a>.</div>';
+      list.innerHTML = outbound.length ? outbound.map(cardHTML).join('') : empty;
+      returnList.innerHTML = IS_ROUND_TRIP ? (returning.length ? returning.map(cardHTML).join('') : empty) : '';
+      updateItinerarySummary();
     }
 
     document.querySelectorAll('.filter-btn').forEach((btn) => {
@@ -459,22 +519,34 @@
       if (!ids.length) reason = 'Select at least one seat';
       else if (!st.board) reason = 'Select a boarding point';
       else if (!st.drop) reason = 'Select a dropping point';
-      else if (!st.name.trim()) reason = 'Enter the passenger name';
-      else if (st.phone.replace(/\D/g, '').length < 7) reason = 'Enter a valid mobile number';
+      else if (!passengerInfo.name.trim()) reason = 'Enter the passenger name';
+      else if (passengerInfo.phone.replace(/\D/g, '').length < 7) reason = 'Enter a valid mobile number';
+      else if (!passengerInfo.idNumber.trim()) reason = 'Enter an ID or passport number';
+      else if (!passengerInfo.luggage.trim()) reason = 'Enter a luggage allowance or type None';
+      else if (!passengerInfo.medical.trim()) reason = 'Enter medical needs or type None';
+      else if (IS_ROUND_TRIP && !chosenTripForLeg('outbound')) reason = 'Select seats for the outbound trip';
+      else if (IS_ROUND_TRIP && !chosenTripForLeg('return')) reason = 'Select seats for the return trip';
+      else if (IS_ROUND_TRIP && (!sel(chosenTripForLeg('outbound').id).board || !sel(chosenTripForLeg('outbound').id).drop)) reason = 'Complete outbound boarding and alighting points';
+      else if (IS_ROUND_TRIP && (!sel(chosenTripForLeg('return').id).board || !sel(chosenTripForLeg('return').id).drop)) reason = 'Complete return boarding and alighting points';
       contBtn.disabled = !!reason;
-      contText.textContent = reason || `Continue · ${ids.length} seat${ids.length > 1 ? 's' : ''} · KES ${money(totalFor(t))}`;
+      contText.textContent = reason || `Continue · KES ${money(IS_ROUND_TRIP ? roundTripTotal() : totalFor(t))}`;
       contInfo.style.display = reason ? '' : 'none';
       contBtn.title = reason;
 
-      const card = list.querySelector(`.trip-card[data-id="${t.id}"] .price-one`);
+      updateItinerarySummary();
+      const card = resultsTrips.querySelector(`.trip-card[data-id="${t.id}"] .price-one`);
       if (card) card.textContent = money(cardPrice(t));
     }
 
     function fillPoints(t) {
       const st = sel(t.id);
       const user = window.BuscarSite.getCookie('user');
-      if (!st.name && user && user.name) st.name = user.name;
-      if (!st.phone && user && user.phone) st.phone = user.phone;
+      ['name', 'phone', 'idNumber', 'luggage', 'medical'].forEach((key) => {
+        if (!passengerInfo[key] && st[key]) passengerInfo[key] = st[key];
+      });
+      if (!passengerInfo.name && user && user.name) passengerInfo.name = user.name;
+      if (!passengerInfo.phone && user && user.phone) passengerInfo.phone = user.phone;
+      ['name', 'phone', 'idNumber', 'luggage', 'medical'].forEach((key) => { st[key] = passengerInfo[key] || ''; });
       boardSel.innerHTML = '<option value="" disabled>Select a boarding point</option>' + t.boardPoints.map((p) => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
       dropSel.innerHTML = '<option value="" disabled>Select a dropping point</option>' + t.dropPoints.map((p) => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
       boardSel.value = st.board; dropSel.value = st.drop;
@@ -484,6 +556,7 @@
       luggageNote.value = st.luggage;
       medicalNote.value = st.medical;
       persistSelection(t);
+      savePassengerInfo();
     }
 
     /* ---------- Open / close ---------- */
@@ -499,14 +572,15 @@
       panel.style.transform = '';
       backdrop.classList.toggle('show', isMobile());
       lockScroll();
-      list.querySelectorAll('.trip-card').forEach((c) => {
+      resultsTrips.querySelectorAll('.trip-card').forEach((c) => {
         const on = c.dataset.id === id;
         c.classList.toggle('is-open', on);
         const b = c.querySelector('.view-seats');
-        b.textContent = on ? 'Close' : 'View Seats';
+        b.textContent = on ? 'Close' : sel(c.dataset.id).seats.size ? 'Selected' : 'View Seats';
         b.setAttribute('aria-expanded', String(on));
       });
       panel.querySelector('.panel-body').scrollTop = 0;
+      panel.querySelector('.sheet-head strong').textContent = (t.leg === 'return' ? 'Return' : 'Outbound') + ' · ' + t.from + ' to ' + t.to;
       if (!isMobile()) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
@@ -517,15 +591,16 @@
       panel.style.transform = '';
       backdrop.classList.remove('show');
       lockScroll();
-      list.querySelectorAll('.trip-card.is-open').forEach((c) => {
+      resultsTrips.querySelectorAll('.trip-card.is-open').forEach((c) => {
         c.classList.remove('is-open');
         const b = c.querySelector('.view-seats');
-        b.textContent = 'View Seats';
+        b.textContent = sel(c.dataset.id).seats.size ? 'Selected' : 'View Seats';
         b.setAttribute('aria-expanded', 'false');
       });
+      panel.querySelector('.sheet-head strong').textContent = 'Seat Selection';
     }
 
-    list.addEventListener('click', (e) => {
+    resultsTrips.addEventListener('click', (e) => {
       const btn = e.target.closest('.view-seats');
       if (!btn) return;
       btn.dataset.id === openId ? closeSeats() : openSeats(btn.dataset.id);
@@ -540,6 +615,13 @@
       if (st.seats.has(id)) st.seats.delete(id);
       else {
         if (st.seats.size >= MAX_SEATS) { showToast('You can book up to ' + MAX_SEATS + ' seats at a time.'); return; }
+        if (!st.seats.size) {
+          allTrips.filter((trip) => trip.leg === t.leg && trip.id !== t.id && sel(trip.id).seats.size).forEach((trip) => {
+            const previous = sel(trip.id);
+            previous.seats.clear(); previous.board = ''; previous.drop = '';
+            persistSelection(trip);
+          });
+        }
         st.seats.add(id);
       }
       persistSelection(t);
@@ -547,6 +629,12 @@
       b.classList.toggle('selected', on);
       b.classList.toggle('free', !on);
       b.setAttribute('aria-pressed', String(on));
+      resultsTrips.querySelectorAll('.trip-card').forEach((card) => {
+        const chosen = sel(card.dataset.id).seats.size > 0;
+        card.classList.toggle('has-selection', chosen);
+        const cardButton = card.querySelector('.view-seats');
+        if (card.dataset.id !== openId) cardButton.textContent = chosen ? 'Selected' : 'View Seats';
+      });
       updateSummary(t);
     });
 
@@ -563,53 +651,80 @@
 
     boardSel.addEventListener('change', () => { const t = tripById(openId); sel(t.id).board = boardSel.value; persistSelection(t); updateSummary(t); });
     dropSel.addEventListener('change', () => { const t = tripById(openId); sel(t.id).drop = dropSel.value; persistSelection(t); updateSummary(t); });
-    passengerName.addEventListener('input', () => { const t = tripById(openId); if (t) { sel(t.id).name = passengerName.value; persistSelection(t); updateSummary(t); } });
-    passengerPhone.addEventListener('input', () => { const t = tripById(openId); if (t) { sel(t.id).phone = passengerPhone.value; persistSelection(t); updateSummary(t); } });
-    passengerId.addEventListener('input', () => { const t = tripById(openId); if (t) { sel(t.id).idNumber = passengerId.value; persistSelection(t); } });
-    luggageNote.addEventListener('input', () => { const t = tripById(openId); if (t) { sel(t.id).luggage = luggageNote.value; persistSelection(t); } });
-    medicalNote.addEventListener('input', () => { const t = tripById(openId); if (t) { sel(t.id).medical = medicalNote.value; persistSelection(t); } });
+    const syncPassengerField = (field, value) => {
+      const t = tripById(openId);
+      if (!t) return;
+      passengerInfo[field] = value;
+      allTrips.forEach((trip) => { sel(trip.id)[field] = value; persistSelection(trip); });
+      savePassengerInfo();
+      updateSummary(t);
+    };
+    passengerName.addEventListener('input', () => syncPassengerField('name', passengerName.value));
+    passengerPhone.addEventListener('input', () => syncPassengerField('phone', passengerPhone.value));
+    passengerId.addEventListener('input', () => syncPassengerField('idNumber', passengerId.value));
+    luggageNote.addEventListener('input', () => syncPassengerField('luggage', luggageNote.value));
+    medicalNote.addEventListener('input', () => syncPassengerField('medical', medicalNote.value));
 
     contBtn.addEventListener('click', () => {
       const t = tripById(openId), st = sel(t.id);
-      const seats = [...st.seats].map(seatName).join(', ');
+      const outbound = IS_ROUND_TRIP ? chosenTripForLeg('outbound') : t;
+      const returning = IS_ROUND_TRIP ? chosenTripForLeg('return') : null;
       const bookingId = 'BR-' + Date.now().toString(36).toUpperCase();
       const safe = (value, fallback) => String(value || '').replace(/[\r\n]+/g, ' ').trim() || fallback;
-      const message = [
-        '*━━━━━━━━━━━━━━━━━━━━━*',
-        '*BUSCAR*',
-        '_Coach booking request_',
-        '*━━━━━━━━━━━━━━━━━━━━━*',
-        '',
-        '*BOOKING REQUEST*',
-        'Reference: ' + bookingId,
-        '---------------------------------------------',
-        '*Route:* _' + t.from + ' to ' + t.to + '_',
-        '*Trip Type:* _' + TRIP_TYPE + '_',
-        '*Date of Travel:* _' + safe(DATE, 'Not specified') + '_',
-        '*Scheduled Departure:* _' + safe(t.depart, 'To be confirmed') + '_',
-        '*Service Class:* _' + safe(t.type, 'Coach service') + ' (' + safe(t.badge, 'Standard') + ')_',
-        '',
+      const legReceipt = (trip, label) => {
+        const state = sel(trip.id);
+        const seats = [...state.seats].map(seatName).join(', ');
+        return [
+          ...(label ? ['*' + label + ' TRIP*'] : []),
+          '*Date of Travel:* _' + safe(trip.date, 'Not specified') + '_',
+          '*Scheduled Departure:* _' + safe(trip.depart, 'To be confirmed') + '_',
+          '*Service Class:* _' + safe(trip.type, 'Coach service') + ' (' + safe(trip.badge, 'Standard') + ')_',
+          ...(IS_ROUND_TRIP ? [
+            '', '*SEAT RESERVATION*',
+            '• *Selected Seat(s):* *' + safe(seats, 'None selected') + '*',
+            '• *Leg Fare:* *KES ' + money(totalFor(trip)) + '*',
+            '', '*TRAVEL STATIONS*',
+            '• *Boarding Point:* *' + safe(state.board, 'Not selected') + '*',
+            '• *Alighting Point:* *' + safe(state.drop, 'Not selected') + '*'
+          ] : [])
+        ];
+      };
+      const payable = IS_ROUND_TRIP ? roundTripTotal() : totalFor(t);
+      const passengerLines = [
         '*PASSENGER INFORMATION*',
-        '• *Name:* _' + safe(st.name, 'Not provided') + '_',
-        '• *ID / Passport:* _' + safe(st.idNumber, 'Not provided') + '_',
-        '• *Contact Phone:* _' + safe(st.phone, 'Not provided') + '_',
-        '',
-        '*SEAT RESERVATION*',
-        '• *Selected Seat(s):* *' + safe(seats, 'None selected') + '*',
-        '• *Total Payable Fare:* *KES ' + money(totalFor(t)) + '*',
-        '',
-        '*TRAVEL STATIONS*',
-        '• *Boarding Point:* *' + safe(st.board, 'Not selected') + '*',
-        '• *Alighting Point:* *' + safe(st.drop, 'Not selected') + '*',
-        '',
+        '• *Name:* _' + safe(passengerInfo.name, 'Not provided') + '_',
+        '• *ID / Passport:* _' + safe(passengerInfo.idNumber, 'Not provided') + '_',
+        '• *Contact Phone:* _' + safe(passengerInfo.phone, 'Not provided') + '_'
+      ];
+      const additionalLines = [
         '*ADDITIONAL SPECIFICATIONS*',
-        '• *Luggage Allowance:* _' + safe(st.luggage, 'No heavy luggage') + '_',
-        '• *Special Medical Needs:* _' + safe(st.medical, 'None specified') + '_',
-        '',
-        '*━━━━━━━━━━━━━━━━━━━━━*',
-        '_Thank you for choosing BUSCAR. Our team will confirm availability and booking details on WhatsApp._'
+        '• *Luggage Allowance:* _' + safe(passengerInfo.luggage, 'Not provided') + '_',
+        '• *Special Medical Needs:* _' + safe(passengerInfo.medical, 'Not provided') + '_'
+      ];
+      const messageLines = [
+        '*━━━━━━━━━━━━━━━━━━━━━*', '*BUSCAR KENYA*', '_Coach booking request_', '*━━━━━━━━━━━━━━━━━━━━━*',
+        '', '*BOOKING REQUEST*', 'Reference: ' + bookingId, '---------------------------------------------',
+        '*Route:* _' + (IS_ROUND_TRIP ? FROM + ' to ' + TO + ' and return' : outbound.from + ' to ' + outbound.to) + '_',
+        '*Trip Type:* _' + TRIP_TYPE + '_'
+      ];
+      if (IS_ROUND_TRIP) {
+        messageLines.push('', ...legReceipt(outbound, 'OUTBOUND'), '', ...legReceipt(returning, 'RETURN'), '', ...passengerLines, '', ...additionalLines, '', '*TOTAL PAYABLE FARE:* *KES ' + money(payable) + '*');
+      } else {
+        const state = sel(outbound.id);
+        const seats = [...state.seats].map(seatName).join(', ');
+        messageLines.push(...legReceipt(outbound, ''), '', ...passengerLines, '', '*SEAT RESERVATION*',
+          '• *Selected Seat(s):* *' + safe(seats, 'None selected') + '*',
+          '• *Total Payable Fare:* *KES ' + money(payable) + '*',
+          '', '*TRAVEL STATIONS*',
+          '• *Boarding Point:* *' + safe(state.board, 'Not selected') + '*',
+          '• *Alighting Point:* *' + safe(state.drop, 'Not selected') + '*',
+          '', ...additionalLines);
+      }
+      messageLines.push('', '*━━━━━━━━━━━━━━━━━━━━━*', '_Thank you for choosing BUSCAR. This request has been pre-validated and formatted via the online booking engine._');
+      const message = [
+        ...messageLines
       ].join('\n');
-      window.BuscarSite.saveRecentBooking({ id: bookingId, route: `${t.from} to ${t.to}` });
+      window.BuscarSite.saveRecentBooking({ id: bookingId, route: IS_ROUND_TRIP ? `${FROM} to ${TO} and return` : `${t.from} to ${t.to}` });
       location.href = window.BuscarSite.whatsappUrl(message);
     });
 
@@ -637,12 +752,16 @@
     })();
 
     /* ---------- Go ---------- */
-    if (!FROM || !TO) {
+    if (!FROM || !TO || (TRIP_TYPE === 'Round-Trip' && !IS_ROUND_TRIP)) {
       foundEl.textContent = '';
-      list.innerHTML = '<div class="empty">No route selected. <a href="index.html#ticket">Go back and search for a bus</a>.</div>';
+      list.innerHTML = !FROM || !TO
+        ? '<div class="empty">No route selected. <a href="index.html#ticket">Go back and search for a bus</a>.</div>'
+        : '<div class="empty">Choose a valid return date on or after the outbound date. <a href="index.html#ticket">Search again</a>.</div>';
+      returnList.innerHTML = '';
+      returnFoundEl.textContent = '';
     } else {
       skeletonCards(3);
-      getTrips().then((trips) => { allTrips = trips; buildPanels(); renderTrips(); });
+      getTrips().then((trips) => { allTrips = trips.outbound.concat(trips.returning); buildPanels(); renderTrips(); });
     }
   </script>
 </body>

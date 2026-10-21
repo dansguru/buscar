@@ -405,7 +405,7 @@
   }
 
   function getFares(from, to) {
-    const fares = ROUTE_FARES[routeKey(from, to)];
+    const fares = ROUTE_FARES[routeKey(from, to)] || ROUTE_FARES[routeKey(to, from)];
     return fares ? { ...fares } : { ...DEFAULT_FARES };
   }
 

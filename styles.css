@@ -132,6 +132,8 @@ button, input { font: inherit; }
   grid-template-columns: 1.15fr 1.15fr 1fr auto;
   align-items: center;
 }
+.booking-form.is-round-trip { grid-template-columns: 1.05fr 1.05fr 1fr 1fr auto; }
+.return-date-field[hidden] { display: none; }
 .booking-field { min-width: 0; display: flex; align-items: center; gap: 9px; padding: 0 14px; min-height: 43px; border-right: 1px solid #e5e7eb; }
 .booking-field:first-child { padding-left: 8px; }
 .booking-field:nth-child(3) { border-right: 0; }
@@ -323,10 +325,12 @@ button, input { font: inherit; }
   .booking-top { align-items: flex-start; gap: 10px; flex-wrap: wrap; }
   .booking-top p { margin-left: auto; }
   .booking-form { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .booking-form.is-round-trip { grid-template-columns: 1fr 1fr; }
   .booking-field { padding: 6px 8px; border-right: 0; border-bottom: 1px solid #eee; }
   .booking-field:nth-child(2) { border-left: 1px solid #eee; }
   .booking-field:nth-child(3) { grid-column: 1 / 2; }
   .search-btn { grid-column: 2 / 3; width: 100%; min-width: 0; }
+  .booking-form.is-round-trip .search-btn { grid-column: 1 / -1; }
   .content-wrap { width: calc(100% - 24px); margin-top: 22px; }
   .amenities-grid, .benefits-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cta-slide { flex-basis: 100%; }

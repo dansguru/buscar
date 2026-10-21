@@ -99,7 +99,7 @@
       medical: String(selection.medical || '').slice(0, 160)
     };
     const keys = Object.keys(state.selections);
-    keys.slice(0, Math.max(0, keys.length - 8)).forEach((oldKey) => delete state.selections[oldKey]);
+    keys.slice(0, Math.max(0, keys.length - 20)).forEach((oldKey) => delete state.selections[oldKey]);
     updateState(state);
   }
 
