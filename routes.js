@@ -394,6 +394,10 @@
   ];
   const ROUTE_FARES = Object.create(null);
   const DEFAULT_FARES = { Vip: 2500, Bclass: 2200, Normal: 2000 };
+  const CITY_STATIONS = {
+    NAIROBI: ['Tea Room', 'Eastleigh', 'South C', 'River Road', 'Airtel Shell', 'Safaricom Shell', 'Mlolongo', 'Westlands Shell', 'Accra Street'],
+    MOMBASA: ['Mwembe Tayari', 'Nyali', 'Bamburi', 'Mtwapa', 'Kilifi Stage', 'Malindi Stage']
+  };
   const routeKey = (from, to) => `${from.trim().toUpperCase()}|${to.trim().toUpperCase()}`;
 
   FARE_ROWS.forEach(([from, to, Vip, Bclass, Normal]) => {
@@ -409,5 +413,11 @@
     return fares ? { ...fares } : { ...DEFAULT_FARES };
   }
 
-  window.BuscarRouteData = { getRoutes, getFares };
+  function getStations(city) {
+    const name = String(city || '').trim().toUpperCase();
+    const stations = CITY_STATIONS[name] || (name ? [name + ' Main Stage'] : []);
+    return [...stations, 'Other / Along the Way'];
+  }
+
+  window.BuscarRouteData = { getRoutes, getFares, getStations };
 })();

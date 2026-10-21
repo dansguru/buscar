@@ -145,9 +145,11 @@
             <div class="points">
               <label>Boarding Point <span class="required-mark">Required</span>
                 <select id="boardSel" required aria-required="true"></select>
+                <input id="boardOther" type="text" maxlength="100" placeholder="Enter exact pickup point" aria-label="Other boarding point" hidden>
               </label>
               <label>Alighting Point <span class="required-mark">Required</span>
                 <select id="dropSel" required aria-required="true"></select>
+                <input id="dropOther" type="text" maxlength="100" placeholder="Enter exact drop-off point" aria-label="Other alighting point" hidden>
               </label>
               <label>Passenger Full Name <span class="required-mark">Required</span>
                 <input id="passengerName" type="text" autocomplete="name" required aria-required="true" placeholder="As shown on ID or passport">
@@ -252,8 +254,6 @@
           badge: ['Highway', 'Express', 'Coastal'][Math.floor(s / 3) % 3],
           code: code(from) + ' - ' + code(to),
           from, to, date: travelDate, leg,
-          boarding: from + (s % 2 ? ' Main Stage' : ' Bus Terminal'),
-          dropping: to + (s % 3 ? ' CBD' : ' Terminal'),
           depMins: dep,
           depart: fmt(dep),
           arrive: fmt(dep + dur),
@@ -263,8 +263,8 @@
           fares: window.BuscarRouteData.getFares(from, to, s),
           amenities: AMENITIES.filter((_, k) => (s >> k) & 1 || k === 0)
         };
-        t.boardPoints = [t.boarding, from + ' Highway Stage', from + ' Town Centre'];
-        t.dropPoints = [t.dropping, to + ' Highway Stage', to + ' Town Centre'];
+        t.boardPoints = window.BuscarRouteData.getStations(from);
+        t.dropPoints = window.BuscarRouteData.getStations(to);
         t.seats = buildSeats(t, s);
         trips.push(t);
       }
@@ -310,7 +310,9 @@
         selections[id] = {
           seats: new Set(Array.isArray(saved.seats) ? saved.seats : []),
           board: saved.board || '',
+          boardOther: saved.boardOther || '',
           drop: saved.drop || '',
+          dropOther: saved.dropOther || '',
           name: saved.name || '',
           phone: saved.phone || '',
           idNumber: saved.idNumber || '',
@@ -323,7 +325,7 @@
     const persistSelection = (t) => {
       const state = sel(t.id);
       window.BuscarSite.saveSelection(selectionKey(t.id), {
-        seats: [...state.seats], board: state.board, drop: state.drop, name: state.name, phone: state.phone,
+        seats: [...state.seats], board: state.board, boardOther: state.boardOther, drop: state.drop, dropOther: state.dropOther, name: state.name, phone: state.phone,
         idNumber: state.idNumber, luggage: state.luggage, medical: state.medical
       });
     };
@@ -471,6 +473,8 @@
     const selList = document.getElementById('selList');
     const boardSel = document.getElementById('boardSel');
     const dropSel = document.getElementById('dropSel');
+    const boardOther = document.getElementById('boardOther');
+    const dropOther = document.getElementById('dropOther');
     const contBtn = document.getElementById('continueBtn');
     const contText = document.getElementById('continueText');
     const contInfo = document.getElementById('continueInfo');
