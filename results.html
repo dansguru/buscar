@@ -149,11 +149,11 @@
               <label>Alighting Point <span class="required-mark">Required</span>
                 <select id="dropSel" required aria-required="true"></select>
               </label>
-              <label>Passenger Name <span class="required-mark">Required</span>
-                <input id="passengerName" type="text" autocomplete="name" required aria-required="true" placeholder="Enter passenger's full name">
+              <label>Passenger Full Name <span class="required-mark">Required</span>
+                <input id="passengerName" type="text" autocomplete="name" required aria-required="true" placeholder="As shown on ID or passport">
               </label>
-              <label>Mobile Number <span class="required-mark">Required</span>
-                <input id="passengerPhone" type="tel" inputmode="tel" autocomplete="tel" required aria-required="true" placeholder="Number BUSCAR can reach">
+              <label>Mobile Number for Calls and Payment <span class="required-mark">Required</span>
+                <input id="passengerPhone" type="tel" inputmode="tel" autocomplete="tel" required aria-required="true" placeholder="Enter a number for calls and payment updates">
               </label>
               <label>ID / Passport <span class="required-mark">Required</span>
                 <input id="passengerId" type="text" autocomplete="off" maxlength="40" required aria-required="true" placeholder="Enter ID or passport number">
@@ -519,8 +519,8 @@
       if (!ids.length) reason = 'Select at least one seat';
       else if (!st.board) reason = 'Select a boarding point';
       else if (!st.drop) reason = 'Select a dropping point';
-      else if (!passengerInfo.name.trim()) reason = 'Enter the passenger name';
-      else if (passengerInfo.phone.replace(/\D/g, '').length < 7) reason = 'Enter a valid mobile number';
+      else if (!passengerInfo.name.trim()) reason = 'Enter the passenger’s full name as shown on ID or passport';
+      else if (passengerInfo.phone.replace(/\D/g, '').length < 7) reason = 'Enter a valid mobile number for calls and payment';
       else if (!passengerInfo.idNumber.trim()) reason = 'Enter an ID or passport number';
       else if (!passengerInfo.luggage.trim()) reason = 'Enter a luggage allowance or type None';
       else if (!passengerInfo.medical.trim()) reason = 'Enter medical needs or type None';
@@ -694,7 +694,7 @@
         '*PASSENGER INFORMATION*',
         '• *Name:* _' + safe(passengerInfo.name, 'Not provided') + '_',
         '• *ID / Passport:* _' + safe(passengerInfo.idNumber, 'Not provided') + '_',
-        '• *Contact Phone:* _' + safe(passengerInfo.phone, 'Not provided') + '_'
+        '• *Mobile for Calls and Payment:* _' + safe(passengerInfo.phone, 'Not provided') + '_'
       ];
       const additionalLines = [
         '*ADDITIONAL SPECIFICATIONS*',
