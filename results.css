@@ -76,7 +76,7 @@
   overflow: hidden;
   padding: 20px 18px 16px;
   border: 1px solid #e8e9ec;
-  border-radius: 12px;
+  border-radius: 0;
   background: #fff;
   box-shadow: 0 3px 12px #18203308;
   transition: border-color .16s ease, box-shadow .16s ease;
@@ -107,7 +107,7 @@
 .view-seats:hover { background: #a71920; transform: translateY(-2px); box-shadow: 0 5px 14px #a7192030; }
 .price-one { display: none; margin-left: auto; color: #d6232c; font: 700 15px/1 Lato, Inter, sans-serif; white-space: nowrap; }
 
-.empty { padding: 30px 22px; border: 1px solid #e8e9ec; border-radius: 10px; background: #fff; color: #565d67; text-align: center; font-size: 13px; }
+.empty { padding: 30px 22px; border: 1px solid #e8e9ec; border-radius: 0; background: #fff; color: #565d67; text-align: center; font-size: 13px; }
 .empty a { color: #a71920; font-weight: 700; text-decoration: underline; }
 .skeleton-card { pointer-events: none; }
 .sk { display: block; border-radius: 6px; background: linear-gradient(90deg, #eceef1 25%, #f7f8f9 40%, #eceef1 65%); background-size: 300% 100%; animation: skeleton-shimmer 1.3s ease infinite; }

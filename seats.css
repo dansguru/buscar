@@ -21,7 +21,7 @@
   max-height: calc(100vh - 24px);
   overflow-y: auto;
   border: 1px solid #e9e9e9;
-  border-radius: 14px;
+  border-radius: 0;
   background: #fff;
   font-family: Lato, Inter, sans-serif;
   color: #111;
@@ -123,7 +123,7 @@
 .points label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; }
 .points select, .points input {
   width: 100%; height: 40px; padding: 0 10px;
-  border: 1px solid #d6d6d6; border-radius: 10px; background: #fff;
+  border: 1px solid #d6d6d6; border-radius: 0; background: #fff;
   font: 500 13px Lato, Inter, sans-serif; color: #111;
   transition: border-color .18s, box-shadow .18s;
 }
@@ -148,7 +148,7 @@
     max-height: 88vh;
     overflow: hidden;
     display: flex; flex-direction: column;
-    border-radius: 20px 20px 0 0;
+    border-radius: 0;
     box-shadow: 0 -8px 30px rgba(0,0,0,.2);
     transform: translateY(100%);
     transition: transform .3s ease;
@@ -157,7 +157,7 @@
 
   .results-layout.has-open .seat-panel { transform: translateY(0); visibility: visible; }
 
-  .sheet-head { position: relative; padding: 18px 20px 12px; background: #f7f8fa; border-radius: 20px 20px 0 0; border-bottom: 1px solid #e6e6e6; }
+  .sheet-head { position: relative; padding: 18px 20px 12px; background: #f7f8fa; border-radius: 0; border-bottom: 1px solid #e6e6e6; }
   .sheet-grab { display: block; position: absolute; top: 7px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 99px; background: #cfcfcf; }
   .panel-body { overflow-y: auto; padding: 14px 16px 24px; -webkit-overflow-scrolling: touch; }
   .seat-legend { justify-content: flex-start; }

@@ -93,7 +93,10 @@
       board: String(selection.board || '').slice(0, 100),
       drop: String(selection.drop || '').slice(0, 100),
       name: String(selection.name || '').slice(0, 80),
-      phone: String(selection.phone || '').replace(/[^\d+]/g, '').slice(0, 20)
+      phone: String(selection.phone || '').replace(/[^\d+]/g, '').slice(0, 20),
+      idNumber: String(selection.idNumber || '').slice(0, 40),
+      luggage: String(selection.luggage || '').slice(0, 100),
+      medical: String(selection.medical || '').slice(0, 160)
     };
     const keys = Object.keys(state.selections);
     keys.slice(0, Math.max(0, keys.length - 8)).forEach((oldKey) => delete state.selections[oldKey]);

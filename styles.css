@@ -113,7 +113,7 @@ button, input { font: inherit; }
   width: min(1320px, calc(100% - 36px));
   margin: -84px auto 0;
   padding: 10px 8px 8px;
-  border-radius: 14px;
+  border-radius: 0;
   background: #f4f4f4;
 }
 .booking-top { min-height: 30px; display: flex; align-items: center; justify-content: space-between; padding: 0 11px 8px 3px; }
@@ -127,7 +127,7 @@ button, input { font: inherit; }
   padding: 8px 12px;
   background: #fff;
   border: 1px solid #ddd;
-  border-radius: 13px;
+  border-radius: 0;
   display: grid;
   grid-template-columns: 1.15fr 1.15fr 1fr auto;
   align-items: center;
@@ -153,7 +153,7 @@ button, input { font: inherit; }
 .content-section h2 { margin: 0 0 8px; font-size: 18px; line-height: 1.25; font-weight: 700; }
 .section-subtitle { color: #5b6570; margin: 0 0 14px; font-size: 12px; }
 .amenities-grid, .benefits-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.info-card { border: 1px solid #ededed; border-radius: 13px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.045); text-align: center; }
+.info-card { border: 1px solid #ededed; border-radius: 0; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.045); text-align: center; }
 .amenity-card { min-height: 126px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 9px; }
 .amenity-card img { width: 45px; height: 45px; object-fit: contain; }
 .amenity-card p { margin: 0; color: #687386; font-size: 10px; }
@@ -204,13 +204,13 @@ button, input { font: inherit; }
 .cta-carousel { position: relative; overflow: hidden; margin: 14px 0 0; }
 .cta-track { --i: 0; display: flex; gap: 7px; transition: transform .7s ease; transform: translateX(calc(var(--i) * -1 * (50% + 3.5px))); }
 .cta-slide { flex: 0 0 calc((100% - 7px) / 2); display: block; }
-.cta-slide img { width: 100%; aspect-ratio: 646 / 244; object-fit: cover; display: block; border-radius: 14px; }
+.cta-slide img { width: 100%; aspect-ratio: 646 / 244; object-fit: cover; display: block; border-radius: 0; }
 .cta-dots { position: absolute; left: 75%; bottom: 12px; transform: translateX(-50%); display: flex; gap: 6px; }
 .cta-dots button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 99px; background: rgba(255,255,255,.65); cursor: pointer; transition: width .3s, background .3s; }
 .cta-dots button.is-active { width: 20px; background: #fff; }
 
 /* ---------- Our routes ---------- */
-.routes-card { width: min(1320px, calc(100% - 36px)); margin: 8px auto 0; padding: 22px 32px 24px; background: #f7f7f7; border: 1px solid #e6e6e6; border-radius: 18px; }
+.routes-card { width: min(1320px, calc(100% - 36px)); margin: 8px auto 0; padding: 22px 32px 24px; background: #f7f7f7; border: 1px solid #e6e6e6; border-radius: 0; }
 .routes-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .routes-title { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
 .routes-icon { width: 36px; height: 36px; border-radius: 9px; background: #e8e8e8; display: grid; place-items: center; }
@@ -234,7 +234,7 @@ button, input { font: inherit; }
 .store-apple { height: 66px; width: auto; display: block; }
 
 /* ---------- Footer ---------- */
-.site-footer { background: #1b1b1b; color: #fff; border-radius: 14px 14px 0 0; }
+.site-footer { background: #1b1b1b; color: #fff; border-radius: 0; }
 .footer-inner { width: min(1320px, calc(100% - 36px)); margin: 0 auto; }
 .footer-logos { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 24px 20px; min-height: 108px; border-bottom: 1px solid #2c2c2c; }
 .footer-brand { flex: 0 0 auto; margin-left: 0; height: auto; }

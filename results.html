@@ -143,6 +143,15 @@
               <label>Mobile Number
                 <input id="passengerPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Number BUSCAR can reach">
               </label>
+              <label>ID / Passport (optional)
+                <input id="passengerId" type="text" autocomplete="off" maxlength="40" placeholder="ID or passport number">
+              </label>
+              <label>Luggage Allowance (optional)
+                <input id="luggageNote" type="text" maxlength="100" placeholder="No heavy luggage">
+              </label>
+              <label>Special Medical Needs (optional)
+                <input id="medicalNote" type="text" maxlength="160" placeholder="None specified">
+              </label>
             </div>
           </section>
 
@@ -170,6 +179,7 @@
     const FROM = (params.get('from') || '').toUpperCase();
     const TO = (params.get('to') || '').toUpperCase();
     const DATE = params.get('date') || '';
+    const TRIP_TYPE = (params.get('trip') || 'one-way').toLowerCase() === 'round-trip' ? 'Round-Trip' : 'One-Way';
     const VARIANT = Math.max(0, Number.parseInt(params.get('variant') || '0', 10) || 0);
 
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -266,7 +276,10 @@
           board: saved.board || '',
           drop: saved.drop || '',
           name: saved.name || '',
-          phone: saved.phone || ''
+          phone: saved.phone || '',
+          idNumber: saved.idNumber || '',
+          luggage: saved.luggage || '',
+          medical: saved.medical || ''
         };
       }
       return selections[id];
@@ -274,7 +287,8 @@
     const persistSelection = (t) => {
       const state = sel(t.id);
       window.BuscarSite.saveSelection(selectionKey(t.id), {
-        seats: [...state.seats], board: state.board, drop: state.drop, name: state.name, phone: state.phone
+        seats: [...state.seats], board: state.board, drop: state.drop, name: state.name, phone: state.phone,
+        idNumber: state.idNumber, luggage: state.luggage, medical: state.medical
       });
     };
     const tripById = (id) => allTrips.find((t) => t.id === id);
@@ -402,6 +416,9 @@
     const contInfo = document.getElementById('continueInfo');
     const passengerName = document.getElementById('passengerName');
     const passengerPhone = document.getElementById('passengerPhone');
+    const passengerId = document.getElementById('passengerId');
+    const luggageNote = document.getElementById('luggageNote');
+    const medicalNote = document.getElementById('medicalNote');
 
     function seatButton(t, id, col, row) {
       const seat = t.seats[id];
@@ -463,6 +480,9 @@
       boardSel.value = st.board; dropSel.value = st.drop;
       passengerName.value = st.name;
       passengerPhone.value = st.phone;
+      passengerId.value = st.idNumber;
+      luggageNote.value = st.luggage;
+      medicalNote.value = st.medical;
       persistSelection(t);
     }
 
@@ -545,24 +565,49 @@
     dropSel.addEventListener('change', () => { const t = tripById(openId); sel(t.id).drop = dropSel.value; persistSelection(t); updateSummary(t); });
     passengerName.addEventListener('input', () => { const t = tripById(openId); if (t) { sel(t.id).name = passengerName.value; persistSelection(t); updateSummary(t); } });
     passengerPhone.addEventListener('input', () => { const t = tripById(openId); if (t) { sel(t.id).phone = passengerPhone.value; persistSelection(t); updateSummary(t); } });
+    passengerId.addEventListener('input', () => { const t = tripById(openId); if (t) { sel(t.id).idNumber = passengerId.value; persistSelection(t); } });
+    luggageNote.addEventListener('input', () => { const t = tripById(openId); if (t) { sel(t.id).luggage = luggageNote.value; persistSelection(t); } });
+    medicalNote.addEventListener('input', () => { const t = tripById(openId); if (t) { sel(t.id).medical = medicalNote.value; persistSelection(t); } });
 
     contBtn.addEventListener('click', () => {
       const t = tripById(openId), st = sel(t.id);
       const seats = [...st.seats].map(seatName).join(', ');
       const bookingId = 'BR-' + Date.now().toString(36).toUpperCase();
+      const safe = (value, fallback) => String(value || '').replace(/[\r\n]+/g, ' ').trim() || fallback;
       const message = [
-        'Hello BUSCAR, please confirm this booking request.',
-        `Request reference: ${bookingId}`,
-        `Passenger: ${st.name.trim()}`,
-        `Mobile: ${st.phone.trim()}`,
-        `Route: ${t.from} to ${t.to}`,
-        `Travel date: ${DATE || 'Not specified'}`,
-        `Vehicle: ${t.type} (${t.badge})`,
-        `Preferred seats: ${seats}`,
-        `Boarding point: ${st.board}`,
-        `Dropping point: ${st.drop}`,
-        `Sample total: KES ${money(totalFor(t))}`,
-        'Please confirm availability and verified payment instructions. I will not pay until the trip is confirmed.'
+        '*━━━━━━━━━━━━━━━━━━━━━*',
+        '*BUSCAR*',
+        '_Coach booking request_',
+        '*━━━━━━━━━━━━━━━━━━━━━*',
+        '',
+        '*BOOKING REQUEST*',
+        'Reference: ' + bookingId,
+        '---------------------------------------------',
+        '*Route:* _' + t.from + ' to ' + t.to + '_',
+        '*Trip Type:* _' + TRIP_TYPE + '_',
+        '*Date of Travel:* _' + safe(DATE, 'Not specified') + '_',
+        '*Scheduled Departure:* _' + safe(t.depart, 'To be confirmed') + '_',
+        '*Service Class:* _' + safe(t.type, 'Coach service') + ' (' + safe(t.badge, 'Standard') + ')_',
+        '',
+        '*PASSENGER INFORMATION*',
+        '• *Name:* _' + safe(st.name, 'Not provided') + '_',
+        '• *ID / Passport:* _' + safe(st.idNumber, 'Not provided') + '_',
+        '• *Contact Phone:* _' + safe(st.phone, 'Not provided') + '_',
+        '',
+        '*SEAT RESERVATION*',
+        '• *Selected Seat(s):* *' + safe(seats, 'None selected') + '*',
+        '• *Total Payable Fare:* *KES ' + money(totalFor(t)) + '*',
+        '',
+        '*TRAVEL STATIONS*',
+        '• *Boarding Point:* *' + safe(st.board, 'Not selected') + '*',
+        '• *Alighting Point:* *' + safe(st.drop, 'Not selected') + '*',
+        '',
+        '*ADDITIONAL SPECIFICATIONS*',
+        '• *Luggage Allowance:* _' + safe(st.luggage, 'No heavy luggage') + '_',
+        '• *Special Medical Needs:* _' + safe(st.medical, 'None specified') + '_',
+        '',
+        '*━━━━━━━━━━━━━━━━━━━━━*',
+        '_Thank you for choosing BUSCAR. Our team will confirm availability and booking details on WhatsApp._'
       ].join('\n');
       window.BuscarSite.saveRecentBooking({ id: bookingId, route: `${t.from} to ${t.to}` });
       location.href = window.BuscarSite.whatsappUrl(message);
