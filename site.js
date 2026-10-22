@@ -136,6 +136,12 @@
   }
 
   const getWhatsappNumber = () => String((window.BUSCAR_CONFIG && window.BUSCAR_CONFIG.whatsappNumber) || '').trim();
+  function whatsappUrl(message) {
+    const digits = getWhatsappNumber().replace(/\D/g, '');
+    const number = digits.startsWith('0') ? `254${digits.slice(1)}` : digits;
+    if (!/^\d{8,15}$/.test(number)) return null;
+    return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+  }
   const whatsappNumber = getWhatsappNumber();
   document.querySelectorAll('[data-whatsapp-contact]').forEach((element) => {
     element.hidden = !whatsappNumber;
@@ -152,7 +158,8 @@
     recordSearch,
     saveSelection,
     saveRecentBooking,
-    getWhatsappNumber
+    getWhatsappNumber,
+    whatsappUrl
   };
 
   const revealTargets = document.querySelectorAll(

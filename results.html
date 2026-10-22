@@ -537,7 +537,7 @@
       else if (IS_ROUND_TRIP && (!sel(chosenTripForLeg('outbound').id).board || !sel(chosenTripForLeg('outbound').id).drop)) reason = 'Complete outbound boarding and alighting points';
       else if (IS_ROUND_TRIP && (!sel(chosenTripForLeg('return').id).board || !sel(chosenTripForLeg('return').id).drop)) reason = 'Complete return boarding and alighting points';
       contBtn.disabled = !!reason;
-      contText.textContent = reason || `Prepare booking request · KES ${money(IS_ROUND_TRIP ? roundTripTotal() : totalFor(t))}`;
+      contText.textContent = reason || `Continue to WhatsApp · KES ${money(IS_ROUND_TRIP ? roundTripTotal() : totalFor(t))}`;
       contInfo.style.display = reason ? '' : 'none';
       contBtn.title = reason;
 
@@ -674,10 +674,59 @@
     medicalNote.addEventListener('input', () => syncPassengerField('medical', medicalNote.value));
 
     contBtn.addEventListener('click', () => {
-      const number = window.BuscarSite.getWhatsappNumber();
-      bookingContactHelp.textContent = number
-        ? `No booking request was sent. Contact BUSCAR on WhatsApp at ${number} and share your trip details manually.`
-        : 'No booking request was sent. The WhatsApp number has not been added yet.';
+      const t = tripById(openId);
+      const outbound = IS_ROUND_TRIP ? chosenTripForLeg('outbound') : t;
+      const returning = IS_ROUND_TRIP ? chosenTripForLeg('return') : null;
+      const bookingId = 'BR-' + Date.now().toString(36).toUpperCase();
+      const safe = (value, fallback = 'Not provided') => String(value || '').replace(/[\r\n]+/g, ' ').trim() || fallback;
+      const legReceipt = (trip, label) => {
+        const state = sel(trip.id);
+        const seats = [...state.seats].sort((a, b) => SEAT_IDS.indexOf(a) - SEAT_IDS.indexOf(b)).map(seatName).join(', ');
+        return [
+          ...(label ? ['*' + label + ' TRIP*'] : []),
+          '*Route:* ' + safe(trip.from) + ' to ' + safe(trip.to),
+          '*Travel date:* ' + safe(trip.date),
+          '*Departure:* ' + safe(trip.depart),
+          '*Service:* ' + safe(trip.type, 'Coach service') + ' (' + safe(trip.badge, 'Standard') + ')',
+          '*Selected seat(s):* ' + safe(seats, 'None selected'),
+          '*Boarding point:* ' + safe(state.board),
+          '*Alighting point:* ' + safe(state.drop),
+          '*Leg fare:* KES ' + money(totalFor(trip))
+        ];
+      };
+      const payable = IS_ROUND_TRIP ? roundTripTotal() : totalFor(t);
+      const messageLines = [
+        '*BUSCAR BOOKING REQUEST*',
+        '*Reference:* ' + bookingId,
+        '*Trip type:* ' + TRIP_TYPE,
+        '',
+        ...legReceipt(outbound, IS_ROUND_TRIP ? 'OUTBOUND' : '')
+      ];
+      if (returning) messageLines.push('', ...legReceipt(returning, 'RETURN'));
+      messageLines.push(
+        '',
+        '*PASSENGER DETAILS*',
+        '*Full name:* ' + safe(passengerInfo.name),
+        '*Mobile number:* ' + safe(passengerInfo.phone),
+        '*ID / Passport:* ' + safe(passengerInfo.idNumber),
+        '*Luggage:* ' + safe(passengerInfo.luggage),
+        '*Special medical needs:* ' + safe(passengerInfo.medical),
+        '',
+        '*TOTAL FARE:* KES ' + money(payable),
+        '',
+        'Please confirm availability and booking details.'
+      );
+      const url = window.BuscarSite.whatsappUrl(messageLines.join('\n'));
+      if (!url) {
+        bookingContactHelp.textContent = 'Add a valid WhatsApp number in site-config.js before accepting bookings.';
+        return;
+      }
+      window.BuscarSite.saveRecentBooking({
+        id: bookingId,
+        route: IS_ROUND_TRIP ? `${FROM} to ${TO} and return` : `${outbound.from} to ${outbound.to}`
+      });
+      bookingContactHelp.textContent = `Opening WhatsApp with booking receipt ${bookingId}…`;
+      window.location.assign(url);
     });
 
     document.getElementById('sheetClose').addEventListener('click', closeSeats);

@@ -1,4 +1,4 @@
 window.BUSCAR_CONFIG = {
-  // Add the WhatsApp number here when it is ready. It is displayed as text only.
-  whatsappNumber: '0789603783'
+  // This number is shown on the contact page and receives booking requests.
+  whatsappNumber: '0751611435'
 };

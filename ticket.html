@@ -55,10 +55,20 @@
       const help = document.getElementById('ticketHelp');
       if (!ticket || !mobile) { help.textContent = 'Enter both your ticket number and mobile number.'; (ticket ? form.mobile : form.ticket).focus(); return; }
       help.textContent = '';
-      const number = window.BuscarSite.getWhatsappNumber();
-      help.textContent = number
-        ? `Your request has not been sent. Contact BUSCAR on WhatsApp at ${number} and share your ticket details manually.`
-        : 'Your request has not been sent. The WhatsApp number has not been added yet.';
+      const message = [
+        '*BUSCAR TICKET REQUEST*',
+        '*Ticket number:* ' + ticket,
+        '*Mobile number:* ' + mobile,
+        '',
+        'Please help retrieve my ticket.'
+      ].join('\n');
+      const url = window.BuscarSite.whatsappUrl(message);
+      if (!url) {
+        help.textContent = 'Add a valid WhatsApp number in site-config.js before sending ticket requests.';
+        return;
+      }
+      help.textContent = 'Opening WhatsApp with your ticket request…';
+      window.location.assign(url);
     });
   </script>
 </body>
