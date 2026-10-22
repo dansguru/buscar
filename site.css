@@ -1,5 +1,10 @@
 /* Shared safety notice, page transitions, and static information pages. */
 body { animation: site-page-in .42s cubic-bezier(.2,.75,.25,1) both; }
+body, body * { -webkit-user-select: none; user-select: none; }
+input, textarea, select, [contenteditable="true"], input *, textarea *, select * {
+  -webkit-user-select: text;
+  user-select: text;
+}
 @keyframes site-page-in {
   from { opacity: 0; }
   to { opacity: 1; }

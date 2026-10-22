@@ -1,4 +1,26 @@
 (() => {
+  const isEditable = (target) => target instanceof Element
+    && (target.closest('input, textarea, select, [contenteditable="true"]') !== null);
+
+  document.addEventListener('contextmenu', (event) => event.preventDefault());
+  document.addEventListener('copy', (event) => {
+    if (!isEditable(event.target)) event.preventDefault();
+  });
+  document.addEventListener('cut', (event) => {
+    if (!isEditable(event.target)) event.preventDefault();
+  });
+  document.addEventListener('keydown', (event) => {
+    const key = event.key.toLowerCase();
+    const devToolsShortcut = event.key === 'F12'
+      || ((event.ctrlKey || event.metaKey) && event.shiftKey && ['c', 'i', 'j'].includes(key))
+      || ((event.ctrlKey || event.metaKey) && ['u', 's'].includes(key));
+
+    if (devToolsShortcut) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }, true);
+
   const COOKIE_PREFIX = 'buscar_';
 
   function getCookie(name) {
