@@ -726,6 +726,11 @@
         route: IS_ROUND_TRIP ? `${FROM} to ${TO} and return` : `${outbound.from} to ${outbound.to}`
       });
       bookingContactHelp.textContent = `Opening WhatsApp with booking receipt ${bookingId}…`;
+      window.BuscarSite.trackWhatsAppRedirect({
+        source: 'booking',
+        route: IS_ROUND_TRIP ? `${FROM} to ${TO} and return` : `${outbound.from} to ${outbound.to}`,
+        fare_kes: payable
+      });
       window.location.assign(url);
     });
 

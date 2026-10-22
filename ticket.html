@@ -68,6 +68,7 @@
         return;
       }
       help.textContent = 'Opening WhatsApp with your ticket request…';
+      window.BuscarSite.trackWhatsAppRedirect({ source: 'ticket_support' });
       window.location.assign(url);
     });
   </script>

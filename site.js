@@ -135,6 +135,102 @@
     updateState(state);
   }
 
+  const analyticsConfig = window.BUSCAR_CONFIG || {};
+  const posthogProjectApiKey = String(analyticsConfig.posthogProjectApiKey || '').trim();
+  const posthogHost = String(analyticsConfig.posthogHost || 'https://us.i.posthog.com').replace(/\/+$/, '');
+  const siteName = 'buscar';
+  let analyticsDistinctId;
+
+  function getAnalyticsDistinctId() {
+    if (analyticsDistinctId) return analyticsDistinctId;
+    const storageKey = `${siteName}_analytics_distinct_id`;
+    try {
+      const stored = window.localStorage.getItem(storageKey);
+      if (stored && /^[0-9a-f-]{36}$/i.test(stored)) {
+        analyticsDistinctId = stored;
+        return analyticsDistinctId;
+      }
+    } catch (error) {
+      console.warn('PostHog anonymous ID could not be read from local storage.', error);
+    }
+
+    if (!window.crypto || !window.crypto.getRandomValues) {
+      console.error('PostHog anonymous tracking requires browser cryptography support.');
+      return null;
+    }
+    if (window.crypto.randomUUID) {
+      analyticsDistinctId = window.crypto.randomUUID();
+    } else {
+      const bytes = window.crypto.getRandomValues(new Uint8Array(16));
+      bytes[6] = (bytes[6] & 0x0f) | 0x40;
+      bytes[8] = (bytes[8] & 0x3f) | 0x80;
+      const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0'));
+      analyticsDistinctId = `${hex.slice(0, 4).join('')}-${hex.slice(4, 6).join('')}-${hex.slice(6, 8).join('')}-${hex.slice(8, 10).join('')}-${hex.slice(10).join('')}`;
+    }
+
+    try {
+      window.localStorage.setItem(storageKey, analyticsDistinctId);
+    } catch (error) {
+      console.warn('PostHog anonymous ID could not be saved; it will be temporary.', error);
+    }
+    return analyticsDistinctId;
+  }
+
+  function captureAnalyticsEvent(eventName, properties = {}) {
+    if (!posthogProjectApiKey) return;
+    if (!['https://us.i.posthog.com', 'https://eu.i.posthog.com'].includes(posthogHost)) {
+      console.error('PostHog host must be the US or EU ingestion host.');
+      return;
+    }
+
+    const payload = {
+      api_key: posthogProjectApiKey,
+      event: eventName,
+      distinct_id: getAnalyticsDistinctId(),
+      properties: {
+        $process_person_profile: false,
+        $geoip_disable: true,
+        site: siteName,
+        page_path: window.location.pathname,
+        ...properties
+      }
+    };
+    if (!payload.distinct_id) return;
+    const endpoint = `${posthogHost}/i/v0/e/`;
+    const body = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+    if (navigator.sendBeacon(endpoint, body)) return;
+
+    fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch((error) => console.error('PostHog event could not be sent.', error));
+  }
+
+  function trackWhatsAppRedirect(details = {}) {
+    const properties = { source: String(details.source || 'support_link').slice(0, 40) };
+    const route = String(details.route || '').replace(/[\r\n]+/g, ' ').trim().slice(0, 120);
+    const fare = Number(details.fare_kes);
+    if (route) properties.route = route;
+    if (Number.isFinite(fare) && fare >= 0 && fare <= 1000000) properties.fare_kes = fare;
+    captureAnalyticsEvent('whatsapp_redirect', properties);
+  }
+
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const target = event.target.closest('a, button, [role="button"]');
+    if (!target) return;
+
+    const label = String(target.getAttribute('aria-label') || target.textContent || '')
+      .replace(/\s+/g, ' ').trim().slice(0, 80);
+    captureAnalyticsEvent('site_click', { click_label: label });
+    if (target.matches('a[data-whatsapp-link]') && /^https:\/\/wa\.me\//i.test(target.href)) {
+      trackWhatsAppRedirect({ source: target.dataset.whatsappSource || 'support_link' });
+    }
+  });
+  captureAnalyticsEvent('page_view');
+
   const getWhatsappNumber = () => String((window.BUSCAR_CONFIG && window.BUSCAR_CONFIG.whatsappNumber) || '').trim();
   function whatsappUrl(message) {
     const digits = getWhatsappNumber().replace(/\D/g, '');
@@ -158,6 +254,7 @@
     recordSearch,
     saveSelection,
     saveRecentBooking,
+    trackWhatsAppRedirect,
     getWhatsappNumber,
     whatsappUrl
   };
