@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Print Ticket — BUSCAR</title>
+  <title>Request a Bus Ticket | BUSCAR Support</title>
+  <meta name="description" content="Need help retrieving a BUSCAR ticket? Send your ticket number and mobile number to our team on WhatsApp for assistance.">
+  <link rel="canonical" href="https://www.buscarkenyaonline.co.ke/ticket.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BUSCAR">
+  <meta property="og:title" content="Request a BUSCAR Ticket">
+  <meta property="og:description" content="Contact BUSCAR support for help retrieving your bus ticket.">
+  <meta property="og:url" content="https://www.buscarkenyaonline.co.ke/ticket.html">
   <link rel="icon" type="image/png" href="public/logo-2.png">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="site.css">
@@ -17,14 +24,14 @@
       <nav class="main-nav" aria-label="Main navigation">
         <a href="index.html">Home</a><a href="about.html">About</a><a href="ticket.html" aria-current="page">Print Ticket</a><a href="contact.html">Contact Us</a><a href="gallery.html">Gallery</a>
       </nav>
-      <div class="nav-actions"><button class="language" aria-label="Language: English"><img src="public/uk.png" alt="UK flag"></button><a class="support" href="https://wa.me/254745342479">Support</a><a class="account-btn" href="#account">My Account</a></div>
+      <div class="nav-actions"><button class="language" aria-label="Language: English"><img src="public/uk.png" alt="UK flag"></button><a class="support" href="contact.html">Support</a><a class="account-btn" href="#account">My Account</a></div>
     </div>
   </header>
-  <div class="safety-banner"><strong>Book safely:</strong> confirm ticket requests with our team on WhatsApp. Never pay through an unverified link. <a href="https://wa.me/254745342479">WhatsApp BUSCAR</a></div>
+  <div class="safety-banner"><strong>Book safely:</strong> confirm ticket requests with our team. Never pay through an unverified link. <a href="contact.html">Contact BUSCAR</a>.</div>
   <main class="info-main">
     <section class="info-hero">
       <h1>Print Ticket</h1>
-      <p>Enter your ticket number and the mobile number used for the booking. We’ll send your request to BUSCAR on WhatsApp so the team can help retrieve your ticket.</p>
+      <p>Enter your ticket number and mobile number to prepare a request. Then contact BUSCAR at the WhatsApp number below. Your request will not be sent automatically.</p>
     </section>
     <section class="info-section">
       <h2>Request your ticket</h2>
@@ -36,11 +43,11 @@
           <input name="mobile" type="tel" inputmode="tel" autocomplete="tel" placeholder="Enter your mobile number" required>
         </label>
         <p class="ticket-help" id="ticketHelp" role="alert"></p>
-        <button type="submit">Request ticket on WhatsApp</button>
+        <button type="submit">Show request instructions</button>
       </form>
     </section>
   </main>
-  <script src="site.js"></script><script src="auth.js"></script>
+  <script src="site-config.js"></script><script src="site.js"></script><script src="auth.js"></script>
   <script>
     document.getElementById('ticketForm').addEventListener('submit', (event) => {
       event.preventDefault();
@@ -48,8 +55,10 @@
       const help = document.getElementById('ticketHelp');
       if (!ticket || !mobile) { help.textContent = 'Enter both your ticket number and mobile number.'; (ticket ? form.mobile : form.ticket).focus(); return; }
       help.textContent = '';
-      const message = `Hello BUSCAR, please send me my ticket.\nTicket number: ${ticket}\nMobile number: ${mobile}`;
-      location.href = window.BuscarSite.whatsappUrl(message);
+      const number = window.BuscarSite.getWhatsappNumber();
+      help.textContent = number
+        ? `Your request has not been sent. Contact BUSCAR on WhatsApp at ${number} and share your ticket details manually.`
+        : 'Your request has not been sent. The WhatsApp number has not been added yet.';
     });
   </script>
 </body>

@@ -113,9 +113,14 @@
     updateState(state);
   }
 
-  function whatsappUrl(message) {
-    return `https://wa.me/254745342479?text=${encodeURIComponent(message)}`;
-  }
+  const getWhatsappNumber = () => String((window.BUSCAR_CONFIG && window.BUSCAR_CONFIG.whatsappNumber) || '').trim();
+  const whatsappNumber = getWhatsappNumber();
+  document.querySelectorAll('[data-whatsapp-contact]').forEach((element) => {
+    element.hidden = !whatsappNumber;
+  });
+  document.querySelectorAll('[data-whatsapp-number]').forEach((element) => {
+    element.textContent = whatsappNumber;
+  });
 
   window.BuscarSite = {
     getCookie,
@@ -125,7 +130,7 @@
     recordSearch,
     saveSelection,
     saveRecentBooking,
-    whatsappUrl
+    getWhatsappNumber
   };
 
   const revealTargets = document.querySelectorAll(
@@ -280,13 +285,14 @@
         <button class="safety-dialog-close" type="button" aria-label="Close notice">&times;</button>
         <img src="public/logo-2.png" alt="BUSCAR">
         <h2 id="safetyTitle">Please book safely</h2>
-        <p>To protect you from scammers, bookings are confirmed manually on WhatsApp. Do not pay through links or send money to unverified numbers. Our team will confirm your trip and payment instructions directly.</p>
+        <p>Bookings are confirmed manually. Do not pay through unverified links or send money before BUSCAR confirms your trip. <span data-whatsapp-contact hidden>WhatsApp contact number: <strong data-whatsapp-number></strong>.</span></p>
         <div class="safety-dialog-actions">
-          <a href="${whatsappUrl('Hello BUSCAR, please help me confirm a booking safely.')}">Chat with BUSCAR</a>
           <button type="button" data-dismiss>Continue to site</button>
         </div>
       </section>`;
     document.body.appendChild(overlay);
+    overlay.querySelector('[data-whatsapp-contact]').hidden = !whatsappNumber;
+    overlay.querySelector('[data-whatsapp-number]').textContent = whatsappNumber;
     const dismiss = () => {
       overlay.classList.remove('show');
       setCookie('safetyDismissed', true, 30);

@@ -25,6 +25,7 @@ body.is-leaving { opacity: 0; transition: opacity .18s ease; }
 }
 .safety-banner strong { font-weight: 800; }
 .safety-banner a { color: #7a161b; font-weight: 800; text-decoration: underline; }
+[data-whatsapp-contact][hidden] { display: none !important; }
 .safety-banner.is-dismissed {
   max-height: 0;
   padding-top: 0;

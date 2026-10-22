@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Available Buses — BUSCAR</title>
+  <meta name="robots" content="noindex,follow">
   <link rel="icon" type="image/png" href="public/logo-2.png">
   <!-- styles.css = shared header/base, results.css = this page, seats.css = seat panel + seat map -->
   <link rel="stylesheet" href="styles.css">
@@ -34,12 +35,12 @@
         <button class="language" aria-label="Language: English">
           <img src="public/uk.png" alt="UK flag">
         </button>
-        <a class="support" href="https://wa.me/254745342479"><span class="help-mark">?</span> Support</a>
+        <a class="support" href="contact.html">Support</a>
         <a class="account-btn" href="#account">My Account</a>
       </div>
     </div>
   </header>
-  <div class="safety-banner"><strong>Sample trip and seat data:</strong> availability is confirmed manually on WhatsApp. Please do not pay through unverified links. <a href="https://wa.me/254745342479">Contact BUSCAR</a></div>
+  <div class="safety-banner"><strong>Sample trip and seat data:</strong> availability is confirmed manually. Do not pay through unverified links. <a href="contact.html">Contact BUSCAR</a>.</div>
 
   <!-- Dark trip bar -->
   <section class="trip-bar" aria-label="Trip summary">
@@ -174,6 +175,7 @@
               <span id="continueText">Select at least one seat</span>
               <span class="info" id="continueInfo" aria-hidden="true">!</span>
             </button>
+            <p class="ticket-help" id="bookingContactHelp" role="status" aria-live="polite"></p>
           </div>
         </div>
       </aside>
@@ -184,6 +186,7 @@
 
   <div class="toast" id="toast" role="status"></div>
 
+  <script src="site-config.js"></script>
   <script src="site.js"></script>
   <script src="routes.js"></script>
   <script src="auth.js"></script>
@@ -478,6 +481,7 @@
     const contBtn = document.getElementById('continueBtn');
     const contText = document.getElementById('continueText');
     const contInfo = document.getElementById('continueInfo');
+    const bookingContactHelp = document.getElementById('bookingContactHelp');
     const passengerName = document.getElementById('passengerName');
     const passengerPhone = document.getElementById('passengerPhone');
     const passengerId = document.getElementById('passengerId');
@@ -533,7 +537,7 @@
       else if (IS_ROUND_TRIP && (!sel(chosenTripForLeg('outbound').id).board || !sel(chosenTripForLeg('outbound').id).drop)) reason = 'Complete outbound boarding and alighting points';
       else if (IS_ROUND_TRIP && (!sel(chosenTripForLeg('return').id).board || !sel(chosenTripForLeg('return').id).drop)) reason = 'Complete return boarding and alighting points';
       contBtn.disabled = !!reason;
-      contText.textContent = reason || `Continue · KES ${money(IS_ROUND_TRIP ? roundTripTotal() : totalFor(t))}`;
+      contText.textContent = reason || `Prepare booking request · KES ${money(IS_ROUND_TRIP ? roundTripTotal() : totalFor(t))}`;
       contInfo.style.display = reason ? '' : 'none';
       contBtn.title = reason;
 
@@ -670,66 +674,10 @@
     medicalNote.addEventListener('input', () => syncPassengerField('medical', medicalNote.value));
 
     contBtn.addEventListener('click', () => {
-      const t = tripById(openId), st = sel(t.id);
-      const outbound = IS_ROUND_TRIP ? chosenTripForLeg('outbound') : t;
-      const returning = IS_ROUND_TRIP ? chosenTripForLeg('return') : null;
-      const bookingId = 'BR-' + Date.now().toString(36).toUpperCase();
-      const safe = (value, fallback) => String(value || '').replace(/[\r\n]+/g, ' ').trim() || fallback;
-      const legReceipt = (trip, label) => {
-        const state = sel(trip.id);
-        const seats = [...state.seats].map(seatName).join(', ');
-        return [
-          ...(label ? ['*' + label + ' TRIP*'] : []),
-          '*Date of Travel:* _' + safe(trip.date, 'Not specified') + '_',
-          '*Scheduled Departure:* _' + safe(trip.depart, 'To be confirmed') + '_',
-          '*Service Class:* _' + safe(trip.type, 'Coach service') + ' (' + safe(trip.badge, 'Standard') + ')_',
-          ...(IS_ROUND_TRIP ? [
-            '', '*SEAT RESERVATION*',
-            '• *Selected Seat(s):* *' + safe(seats, 'None selected') + '*',
-            '• *Leg Fare:* *KES ' + money(totalFor(trip)) + '*',
-            '', '*TRAVEL STATIONS*',
-            '• *Boarding Point:* *' + safe(state.board, 'Not selected') + '*',
-            '• *Alighting Point:* *' + safe(state.drop, 'Not selected') + '*'
-          ] : [])
-        ];
-      };
-      const payable = IS_ROUND_TRIP ? roundTripTotal() : totalFor(t);
-      const passengerLines = [
-        '*PASSENGER INFORMATION*',
-        '• *Name:* _' + safe(passengerInfo.name, 'Not provided') + '_',
-        '• *ID / Passport:* _' + safe(passengerInfo.idNumber, 'Not provided') + '_',
-        '• *Mobile for Calls and Payment:* _' + safe(passengerInfo.phone, 'Not provided') + '_'
-      ];
-      const additionalLines = [
-        '*ADDITIONAL SPECIFICATIONS*',
-        '• *Luggage Allowance:* _' + safe(passengerInfo.luggage, 'Not provided') + '_',
-        '• *Special Medical Needs:* _' + safe(passengerInfo.medical, 'Not provided') + '_'
-      ];
-      const messageLines = [
-        '*━━━━━━━━━━━━━━━━━━━━━*', '*BUSCAR KENYA*', '_Coach booking request_', '*━━━━━━━━━━━━━━━━━━━━━*',
-        '', '*BOOKING REQUEST*', 'Reference: ' + bookingId, '---------------------------------------------',
-        '*Route:* _' + (IS_ROUND_TRIP ? FROM + ' to ' + TO + ' and return' : outbound.from + ' to ' + outbound.to) + '_',
-        '*Trip Type:* _' + TRIP_TYPE + '_'
-      ];
-      if (IS_ROUND_TRIP) {
-        messageLines.push('', ...legReceipt(outbound, 'OUTBOUND'), '', ...legReceipt(returning, 'RETURN'), '', ...passengerLines, '', ...additionalLines, '', '*TOTAL PAYABLE FARE:* *KES ' + money(payable) + '*');
-      } else {
-        const state = sel(outbound.id);
-        const seats = [...state.seats].map(seatName).join(', ');
-        messageLines.push(...legReceipt(outbound, ''), '', ...passengerLines, '', '*SEAT RESERVATION*',
-          '• *Selected Seat(s):* *' + safe(seats, 'None selected') + '*',
-          '• *Total Payable Fare:* *KES ' + money(payable) + '*',
-          '', '*TRAVEL STATIONS*',
-          '• *Boarding Point:* *' + safe(state.board, 'Not selected') + '*',
-          '• *Alighting Point:* *' + safe(state.drop, 'Not selected') + '*',
-          '', ...additionalLines);
-      }
-      messageLines.push('', '*━━━━━━━━━━━━━━━━━━━━━*', '_Thank you for choosing BUSCAR. This request has been pre-validated and formatted via the online booking engine._');
-      const message = [
-        ...messageLines
-      ].join('\n');
-      window.BuscarSite.saveRecentBooking({ id: bookingId, route: IS_ROUND_TRIP ? `${FROM} to ${TO} and return` : `${t.from} to ${t.to}` });
-      location.href = window.BuscarSite.whatsappUrl(message);
+      const number = window.BuscarSite.getWhatsappNumber();
+      bookingContactHelp.textContent = number
+        ? `No booking request was sent. Contact BUSCAR on WhatsApp at ${number} and share your trip details manually.`
+        : 'No booking request was sent. The WhatsApp number has not been added yet.';
     });
 
     document.getElementById('sheetClose').addEventListener('click', closeSeats);

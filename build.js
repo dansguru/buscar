@@ -5,6 +5,8 @@ const root = __dirname;
 const output = path.join(root, 'dist');
 const siteFiles = [
   'index.html',
+  'robots.txt',
+  'sitemap.xml',
   'results.html',
   'about.html',
   'ticket.html',
@@ -17,6 +19,7 @@ const siteFiles = [
   'auth.css',
   'site.css',
   'auth.js',
+  'site-config.js',
   'routes.js',
   'site.js'
 ];

@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact BUSCAR</title>
+  <title>Contact BUSCAR | Official Booking Support</title>
+  <meta name="description" content="Contact the official BUSCAR team on WhatsApp for bus trip questions, booking requests, ticket assistance, and verified payment instructions.">
+  <link rel="canonical" href="https://www.buscarkenyaonline.co.ke/contact.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BUSCAR">
+  <meta property="og:title" content="Contact BUSCAR">
+  <meta property="og:description" content="Get help with BUSCAR trip requests, ticket assistance, and booking confirmation.">
+  <meta property="og:url" content="https://www.buscarkenyaonline.co.ke/contact.html">
   <link rel="icon" type="image/png" href="public/logo-2.png">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="site.css">
@@ -17,10 +24,10 @@
       <nav class="main-nav" aria-label="Main navigation">
         <a href="index.html">Home</a><a href="about.html">About</a><a href="ticket.html">Print Ticket</a><a href="contact.html" aria-current="page">Contact Us</a><a href="gallery.html">Gallery</a>
       </nav>
-      <div class="nav-actions"><button class="language" aria-label="Language: English"><img src="public/uk.png" alt="UK flag"></button><a class="support" href="https://wa.me/254745342479">Support</a><a class="account-btn" href="#account">My Account</a></div>
+      <div class="nav-actions"><button class="language" aria-label="Language: English"><img src="public/uk.png" alt="UK flag"></button><a class="support" href="contact.html">Support</a><a class="account-btn" href="#account">My Account</a></div>
     </div>
   </header>
-  <div class="safety-banner"><strong>Safety first:</strong> confirm bookings and payment instructions directly with BUSCAR. <a href="https://wa.me/254745342479">Chat with us</a></div>
+  <div class="safety-banner"><strong>Safety first:</strong> confirm bookings and payment instructions directly with BUSCAR.</div>
   <main class="info-main">
     <section class="info-hero">
       <h1>We’re here to help</h1>
@@ -29,13 +36,14 @@
     <section class="info-section">
       <h2>Contact BUSCAR</h2>
       <div class="info-grid">
-        <article class="info-card"><h3>WhatsApp</h3><p>Message the team at <strong>0745342479</strong> for manual booking and ticket support.</p></article>
+        <article class="info-card" id="whatsapp-number" data-whatsapp-contact hidden><h3>WhatsApp</h3><p>Contact BUSCAR at <strong data-whatsapp-number></strong> for manual booking and ticket support.</p></article>
         <article class="info-card"><h3>Bookings</h3><p>Send your route, travel date, passenger details, and preferred seats for confirmation.</p></article>
         <article class="info-card"><h3>Payment safety</h3><p>Wait for the team to confirm your trip and provide verified payment instructions. This demo does not process online payments.</p></article>
       </div>
-      <div class="info-actions"><a class="info-action" href="https://wa.me/254745342479?text=Hello%20BUSCAR%2C%20I%20need%20help%20with%20a%20booking.">Message BUSCAR on WhatsApp</a><a class="info-action secondary" href="ticket.html">Request a ticket</a></div>
+      <div class="info-actions"><a class="info-action" href="#whatsapp-number" data-whatsapp-contact hidden>WhatsApp contact number: <span data-whatsapp-number></span></a><a class="info-action secondary" href="ticket.html">Request a ticket</a></div>
     </section>
   </main>
+  <script src="site-config.js"></script>
   <script src="site.js"></script><script src="auth.js"></script>
 </body>
 </html>
