@@ -392,6 +392,54 @@
     ['GILGIL', 'KERICHO', 2500, 2200, 2000],
     ['MPEKETONI', 'HINDI', 2500, 2200, 2000],
   ];
+  // Each row is [from, to, departure, arrival, bus, VIP, Normal, B-Class].
+  const SCHEDULE_ROWS = [
+    ['NAIROBI', 'MOMBASA', '09:00 AM', '03:20 PM', '46 seater A (Eastleigh-Bondeni)', 2200, 1700, 1700],
+    ['NAIROBI', 'MOMBASA', '09:30 PM', '07:10 AM', '45 seater', 2200, 1700, 2000],
+    ['NAIROBI', 'MOMBASA', '10:00 PM', '08:00 AM', '45 seater', 2500, 1700, 1700],
+    ['NAIROBI', 'MOMBASA', '10:15 PM', '07:00 AM', '42 seater premium G7', 2500, 2000, 2000],
+    ['MOMBASA', 'NAKURU', '07:30 PM', '07:00 AM', '46 seater A', 2500, 2000, 2000],
+    ['NAIROBI', 'KILIFI', '07:30 AM', '06:50 PM', '46 seater A', 3200, 2500, 3000],
+    ['NAIROBI', 'KILIFI', '07:30 PM', '07:00 AM', '42 seater premium G7', 3000, 2500, 2500],
+    ['NAIROBI', 'KILIFI', '08:30 PM', '06:00 AM', '46 seater A (Highway)', 3000, 2500, 2500],
+    ['NAIROBI', 'MALINDI', '07:30 AM', '06:50 PM', '46 seater A', 3200, 2500, 3000],
+    ['NAIROBI', 'MALINDI', '07:30 PM', '07:00 AM', '42 seater premium G7', 3000, 2500, 2500],
+    ['NAIROBI', 'MALINDI', '08:30 PM', '06:00 AM', '46 seater A (Highway)', 3000, 2500, 2500],
+    ['NAIROBI', 'MALINDI', '08:45 PM', '09:50 AM', '46 seater A (Nakuru-Lamu, Highway)', 2500, 2500, 2500],
+    ['NAIROBI', 'LAMU', '05:00 AM', '05:30 PM', '45 seater (Direct)', 2700, 2400, 2700],
+    ['NAIROBI', 'LAMU', '08:00 PM', '05:50 AM', '47 seater A (via Garissa)', 2800, 2500, 2600],
+    ['NAIROBI', 'LAMU', '08:45 PM', '09:50 AM', '46 seater A (Highway)', 2800, 2500, 2500],
+    ['NAIROBI', 'NAKURU', '04:45 AM', '07:00 AM', '45 seater A (Highway)', 2500, 2000, 2000],
+    ['NAIROBI', 'NAKURU', '07:00 AM', '10:00 AM', '46 seater A (Lamu-Nakuru, Highway)', 2000, 1000, 2000],
+    ['NAIROBI', 'NAKURU', '03:00 PM', '06:30 AM', '33 seater premium', 5000, 1500, 5000],
+    ['NAIROBI', 'NAKURU', '04:00 PM', '06:00 AM', '42 seater Executive G3', 4000, 3500, 3000],
+    ['NAIROBI', 'NAKURU', '06:00 PM', '08:30 AM', '42 seater Executive G3', 5000, 3000, 4500],
+    ['NAIROBI', 'THIKA', '05:25 AM', '07:00 AM', '46 seater (Highway)', 2200, 1700, 1700],
+    ['NAIROBI', 'ELDORET', '04:00 PM', '06:00 AM', '42 seater Executive G3', 3000, 2000, 3000],
+    ['NAIROBI', 'KISUMU', '03:00 PM', '06:30 AM', '33 seater premium', 5000, 3500, 4500],
+    ['NAIROBI', 'KISUMU', '06:00 PM', '08:30 AM', '42 seater Executive G3', 4500, 3500, 6000],
+    ['NAIROBI', 'BUSIA', '03:00 PM', '06:30 AM', '33 seater premium', 4500, 3500, 4500],
+    ['NAIROBI', 'BUSIA', '06:00 PM', '08:30 AM', '42 seater Executive G3', 4500, 3500, 6000],
+    ['NAIROBI', 'KAMPALA', '03:00 PM', '06:30 AM', '33 seater premium', 4500, 3500, 4500],
+    ['NAIROBI', 'KAMPALA', '04:00 PM', '06:00 AM', '42 seater Executive G3', 4500, 3500, 3500],
+    ['NAIROBI', 'KAMPALA', '06:00 PM', '08:30 AM', '42 seater Executive G3', 4500, 3500, 5000],
+    ['ELDORET', 'KAMPALA', '10:30 PM', '06:00 AM', '42 seater Executive G3', 4500, 3500, 4000],
+  ];
+  const toMinutes = (time) => {
+    const [clock, period] = time.split(' ');
+    let [hours, minutes] = clock.split(':').map(Number);
+    hours = (hours % 12) + (period === 'PM' ? 12 : 0);
+    return hours * 60 + minutes;
+  };
+  const SCHEDULES = Object.create(null);
+  SCHEDULE_ROWS.forEach(([from, to, depart, arrive, bus, Vip, Normal, Bclass]) => {
+    const key = `${from}|${to}`;
+    if (!SCHEDULES[key]) SCHEDULES[key] = [];
+    SCHEDULES[key].push({
+      depart, arrive, depMins: toMinutes(depart), arrMins: toMinutes(arrive), bus,
+      fares: { Vip, Bclass, Normal }
+    });
+  });
   const ROUTE_FARES = Object.create(null);
   const DEFAULT_FARES = { Vip: 2500, Bclass: 2200, Normal: 2000 };
   const CITY_STATIONS = {
@@ -409,8 +457,14 @@
   }
 
   function getFares(from, to) {
-    const fares = ROUTE_FARES[routeKey(from, to)] || ROUTE_FARES[routeKey(to, from)];
+    const key = routeKey(from, to);
+    const schedules = SCHEDULES[key];
+    const fares = schedules ? schedules[0].fares : ROUTE_FARES[key] || ROUTE_FARES[routeKey(to, from)];
     return fares ? { ...fares } : { ...DEFAULT_FARES };
+  }
+
+  function getSchedules(from, to) {
+    return (SCHEDULES[routeKey(from, to)] || []).map((schedule) => ({ ...schedule, fares: { ...schedule.fares } }));
   }
 
   function getStations(city) {
@@ -419,5 +473,5 @@
     return [...stations, 'Other / Along the Way'];
   }
 
-  window.BuscarRouteData = { getRoutes, getFares, getStations };
+  window.BuscarRouteData = { getRoutes, getFares, getSchedules, getStations };
 })();

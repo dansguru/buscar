@@ -133,7 +133,7 @@
           <div class="seat-legend" aria-label="Seat legend">
             <span><i class="lg vip"></i>VIP</span>
             <span><i class="lg normal"></i>Normal</span>
-            <span><i class="lg business"></i>Business</span>
+            <span><i class="lg business"></i>B-Class</span>
             <span><i class="lg booked"></i>Booked</span>
           </div>
 
@@ -245,6 +245,32 @@
 
     function makeTrips(from, to, travelDate, leg) {
       const seed = hash([sessionSeed, from, to, travelDate, VARIANT, leg].join('|'));
+      const schedules = window.BuscarRouteData.getSchedules(from, to);
+      if (schedules.length) {
+        return schedules.map((schedule, i) => {
+          const s = hash(seed + ':schedule:' + i);
+          const durationMins = (schedule.arrMins - schedule.depMins + 1440) % 1440;
+          const t = {
+            id: 'T' + (leg === 'return' ? 'R' : 'O') + s.toString(36).toUpperCase(),
+            type: schedule.bus,
+            badge: 'Scheduled',
+            code: code(from) + ' - ' + code(to),
+            from, to, date: travelDate, leg,
+            depMins: schedule.depMins,
+            depart: schedule.depart,
+            arrive: schedule.arrive,
+            duration: Math.floor(durationMins / 60) + 'h ' + (durationMins % 60) + 'm',
+            rating: (3 + (s % 20) / 10).toFixed(1),
+            seatsLeft: 7 + (s % 20),
+            fares: schedule.fares,
+            amenities: AMENITIES.filter((_, k) => (s >> k) & 1 || k === 0)
+          };
+          t.boardPoints = window.BuscarRouteData.getStations(from);
+          t.dropPoints = window.BuscarRouteData.getStations(to);
+          t.seats = buildSeats(t, s);
+          return t;
+        });
+      }
       const count = 2 + (seed % 3);
       const trips = [];
       for (let i = 0; i < count; i++) {
@@ -389,7 +415,7 @@
           <span class="seats">(${t.seatsLeft} seats left)</span>
         </div>
         <div class="t-price">
-          ${Object.entries(t.fares).map(([k, v]) => `<div>${esc(k)}: <b>${money(v)}</b></div>`).join('')}
+          ${Object.entries(t.fares).map(([k, v]) => `<div>${esc(k === 'Vip' ? 'VIP' : k === 'Bclass' ? 'B-Class' : k)}: <b>${money(v)}</b></div>`).join('')}
         </div>
         <div class="price-one">${money(cardPrice(t))}</div>
         <button class="view-seats" type="button" data-id="${esc(t.id)}" aria-expanded="${open}">${open ? 'Close' : hasSelection ? 'Selected' : 'View Seats'}</button>
