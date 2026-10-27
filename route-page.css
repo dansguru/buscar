@@ -1,0 +1,21 @@
+.route-page { width: min(1100px, calc(100% - 36px)); margin: 0 auto; padding: 26px 0 54px; }
+.route-breadcrumb { display: flex; flex-wrap: wrap; gap: 9px; color: #657080; font-size: 13px; }
+.route-breadcrumb a, .route-help a { color: var(--deep-red); text-decoration: underline; }
+.route-page h1 { margin: 20px 0 12px; font-size: clamp(30px, 5vw, 46px); line-height: 1.1; }
+.route-intro { max-width: 760px; color: #4d5561; font-size: 16px; line-height: 1.65; }
+.route-schedule { margin-top: 30px; padding: 24px; border: 1px solid var(--border); background: #fff9ed; }
+.route-schedule h2 { margin: 0 0 16px; font-size: 23px; }
+.route-table-wrap { overflow-x: auto; }
+.route-schedule table { width: 100%; border-collapse: collapse; text-align: left; }
+.route-schedule th, .route-schedule td { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+.route-schedule th { background: #171717; color: #fff; white-space: nowrap; }
+.route-schedule td:nth-child(n+3) { white-space: nowrap; }
+.fare-note, .route-help { color: #657080; line-height: 1.6; }
+.fare-note { margin: 16px 0 0; font-size: 13px; }
+.route-cta { display: inline-flex; gap: 14px; align-items: center; min-height: 46px; margin-top: 24px; padding: 0 20px; border-radius: 99px; background: #ed6500; color: #fff; font-weight: 800; }
+.route-help { margin-top: 20px; }
+.route-footer { padding: 22px 18px; border-top: 1px solid var(--border); text-align: center; }
+.route-directory { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px 22px; padding: 0; list-style: none; }
+.route-directory a { display: block; padding: 12px; border: 1px solid var(--border); border-radius: 8px; color: var(--deep-red); }
+.all-route-details { display: inline-flex; margin: 16px 0 0 12px; color: var(--deep-red); font-weight: 700; }
+@media (max-width: 700px) { .route-page { width: min(100% - 24px, 1100px); padding-top: 20px; } .route-schedule { padding: 16px 12px; } .route-schedule th, .route-schedule td { padding: 10px 8px; font-size: 12px; } .all-route-details { display: flex; justify-content: center; margin: 14px auto 0; } }
