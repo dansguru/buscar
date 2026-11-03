@@ -212,23 +212,12 @@
     const properties = { source: String(details.source || 'support_link').slice(0, 40) };
     const route = String(details.route || '').replace(/[\r\n]+/g, ' ').trim().slice(0, 120);
     const fare = Number(details.fare_kes);
+    if (!Number.isFinite(fare) || fare <= 0 || fare > 1000000) return;
     if (route) properties.route = route;
-    if (Number.isFinite(fare) && fare >= 0 && fare <= 1000000) properties.fare_kes = fare;
+    properties.fare_kes = fare;
     captureAnalyticsEvent('whatsapp_redirect', properties);
   }
 
-  document.addEventListener('click', (event) => {
-    if (!(event.target instanceof Element)) return;
-    const target = event.target.closest('a, button, [role="button"]');
-    if (!target) return;
-
-    const label = String(target.getAttribute('aria-label') || target.textContent || '')
-      .replace(/\s+/g, ' ').trim().slice(0, 80);
-    captureAnalyticsEvent('site_click', { click_label: label });
-    if (target.matches('a[data-whatsapp-link]') && /^https:\/\/wa\.me\//i.test(target.href)) {
-      trackWhatsAppRedirect({ source: target.dataset.whatsappSource || 'support_link' });
-    }
-  });
   captureAnalyticsEvent('page_view');
 
   const getWhatsappNumber = () => String((window.BUSCAR_CONFIG && window.BUSCAR_CONFIG.whatsappNumber) || '').trim();
