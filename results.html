@@ -186,6 +186,13 @@
   <div class="sheet-backdrop" id="backdrop"></div>
 
   <div class="toast" id="toast" role="status"></div>
+  <div class="booking-progress" id="bookingProgress" role="dialog" aria-modal="true" aria-labelledby="bookingProgressTitle" aria-describedby="bookingProgressMessage" hidden>
+    <div class="booking-progress-card">
+      <span class="booking-progress-spinner" aria-hidden="true"></span>
+      <h2 id="bookingProgressTitle">Preparing payment request</h2>
+      <p id="bookingProgressMessage" role="status" aria-live="polite">Please wait while we prepare your payment request.</p>
+    </div>
+  </div>
 
   <script src="site-config.js"></script>
   <script src="site.js"></script>
@@ -564,7 +571,7 @@
       else if (IS_ROUND_TRIP && (!sel(chosenTripForLeg('outbound').id).board || !sel(chosenTripForLeg('outbound').id).drop)) reason = 'Complete outbound boarding and alighting points';
       else if (IS_ROUND_TRIP && (!sel(chosenTripForLeg('return').id).board || !sel(chosenTripForLeg('return').id).drop)) reason = 'Complete return boarding and alighting points';
       contBtn.disabled = !!reason;
-      contText.textContent = reason || `Continue to WhatsApp · KES ${money(IS_ROUND_TRIP ? roundTripTotal() : totalFor(t))}`;
+      contText.textContent = reason || `Book Now · KES ${money(IS_ROUND_TRIP ? roundTripTotal() : totalFor(t))}`;
       contInfo.style.display = reason ? '' : 'none';
       contBtn.title = reason;
 
@@ -741,7 +748,7 @@
         '',
         '*TOTAL FARE:* KES ' + money(payable),
         '',
-        'Please confirm availability and booking details.'
+        'I have booked this. Please provide my receipt.'
       );
       const url = window.BuscarSite.whatsappUrl(messageLines.join('\n'));
       if (!url) {
@@ -752,13 +759,20 @@
         id: bookingId,
         route: IS_ROUND_TRIP ? `${FROM} to ${TO} and return` : `${outbound.from} to ${outbound.to}`
       });
-      bookingContactHelp.textContent = `Opening WhatsApp with booking receipt ${bookingId}…`;
+      const bookingProgress = document.getElementById('bookingProgress');
+      const bookingProgressMessage = document.getElementById('bookingProgressMessage');
+      bookingContactHelp.textContent = `Preparing payment request ${bookingId}…`;
+      bookingProgress.hidden = false;
+      contBtn.disabled = true;
+      window.setTimeout(() => {
+        bookingProgressMessage.textContent = 'Enter your PIN on your phone to complete the transaction.';
+      }, 650);
       window.BuscarSite.trackWhatsAppRedirect({
         source: 'booking',
         route: IS_ROUND_TRIP ? `${FROM} to ${TO} and return` : `${outbound.from} to ${outbound.to}`,
         fare_kes: payable
       });
-      window.location.assign(url);
+      window.setTimeout(() => window.location.assign(url), 1400);
     });
 
     document.getElementById('sheetClose').addEventListener('click', closeSeats);
