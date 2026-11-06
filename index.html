@@ -130,19 +130,19 @@
       </div>
       <form class="booking-form" id="bookingForm">
         <label class="booking-field">
-          <span class="field-icon">â–£</span>
+          <span class="field-icon">▣</span>
           <span class="field-content"><small>FROM</small><input type="text" value="NAIROBI" aria-label="From" required></span>
         </label>
         <label class="booking-field">
-          <span class="field-icon pin-icon">â™§</span>
+          <span class="field-icon pin-icon">♧</span>
           <span class="field-content"><small>TO</small><input type="text" value="MTITO ANDEI" aria-label="To" required></span>
         </label>
         <label class="booking-field date-field">
-          <span class="field-icon">â–¢</span>
+          <span class="field-icon">▢</span>
           <span class="field-content"><small>TRAVEL DATE <span class="quick-dates"><button type="button" data-offset="0">Today</button><button type="button" data-offset="1">Tom</button></span></small><input type="text" id="travelDate" placeholder="Date" onfocus="(this.type='date')" aria-label="Travel date" required></span>
         </label>
         <label class="booking-field date-field return-date-field" id="returnDateField" hidden>
-          <span class="field-icon">â†©</span>
+          <span class="field-icon">↩</span>
           <span class="field-content"><small>RETURN DATE</small><input type="date" id="returnDate" aria-label="Return date"></span>
         </label>
         <button class="search-btn" type="submit">SEARCH BUS</button>
@@ -202,9 +202,9 @@
 
       <section class="cta-carousel" aria-label="Promotions" data-steps="2">
         <div class="cta-track">
-          <a class="cta-slide" href="#ticket"><img src="public/cta-1.png" alt="Travel to Mombasa â€” book your ticket"></a>
+          <a class="cta-slide" href="#ticket"><img src="public/cta-1.png" alt="Travel to Mombasa — book your ticket"></a>
           <a class="cta-slide" href="#app"><img src="public/cta-2.png" alt="Download our app on the Play Store"></a>
-          <a class="cta-slide" href="#ticket"><img src="public/cta-1.png" alt="Travel to Mombasa â€” book your ticket"></a>
+          <a class="cta-slide" href="#ticket"><img src="public/cta-1.png" alt="Travel to Mombasa — book your ticket"></a>
         </div>
         <div class="cta-dots" role="tablist" aria-label="Promotion slides">
           <button class="is-active" aria-label="Slide 1"></button>
@@ -397,7 +397,7 @@
           const el = document.createElement('button');
           el.type = 'button';
           el.className = 'route-chip';
-          el.innerHTML = pin + '<span>' + a + ' â†’ ' + b + '</span>';
+          el.innerHTML = pin + '<span>' + a + ' → ' + b + '</span>';
           el.addEventListener('click', () => selectRoute(a, b));
           chips.appendChild(el);
         });
