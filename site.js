@@ -227,6 +227,16 @@
     if (!/^\d{8,15}$/.test(number)) return null;
     return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
   }
+  document.querySelectorAll('[data-whatsapp-link]').forEach((link) => {
+    const url = whatsappUrl(link.dataset.whatsappMessage || '');
+    if (url) {
+      link.href = url;
+      link.removeAttribute('aria-disabled');
+    } else {
+      link.removeAttribute('href');
+      link.setAttribute('aria-disabled', 'true');
+    }
+  });
   const whatsappNumber = getWhatsappNumber();
   document.querySelectorAll('[data-whatsapp-contact]').forEach((element) => {
     element.hidden = !whatsappNumber;
