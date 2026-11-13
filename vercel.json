@@ -3,11 +3,5 @@
   "framework": null,
   "installCommand": null,
   "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/api/maintenance"
-    }
-  ]
+  "outputDirectory": "dist"
 }
