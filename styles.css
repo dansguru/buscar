@@ -129,14 +129,13 @@ button, input { font: inherit; }
   border: 1px solid #ddd;
   border-radius: 0;
   display: grid;
-  grid-template-columns: 1.15fr 1.15fr 1fr auto;
+  grid-template-columns: 1.15fr 1.15fr 1fr .9fr auto;
   align-items: center;
 }
-.booking-form.is-round-trip { grid-template-columns: 1.05fr 1.05fr 1fr 1fr auto; }
+.booking-form.is-round-trip { grid-template-columns: 1fr 1fr .9fr .9fr .9fr auto; }
 .return-date-field[hidden] { display: none; }
 .booking-field { min-width: 0; display: flex; align-items: center; gap: 9px; padding: 0 14px; min-height: 43px; border-right: 1px solid #e5e7eb; }
 .booking-field:first-child { padding-left: 8px; }
-.booking-field:nth-child(3) { border-right: 0; }
 .field-icon { color: #697078; font-size: 19px; width: 16px; flex: 0 0 16px; text-align: center; }
 .field-content { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .field-content small { font-size: 10px; color: #475569; }

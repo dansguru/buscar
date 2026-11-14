@@ -23,6 +23,7 @@ const siteFiles = [
   'auth.js',
   'site-config.js',
   'routes.js',
+  'seat-map.js',
   'site.js',
   'protection.js'
 ];
@@ -40,6 +41,9 @@ global.window = {};
 require(path.join(root, 'routes.js'));
 const routeData = global.window.BuscarRouteData;
 const routeDirectory = path.join(output, 'routes');
+const routeDataDirectory = path.join(output, 'route-data');
+fs.rmSync(routeDataDirectory, { recursive: true, force: true });
+fs.mkdirSync(routeDataDirectory, { recursive: true });
 fs.mkdirSync(routeDirectory, { recursive: true });
 const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -58,6 +62,18 @@ for (const route of indexableRoutes) {
   const canonical = `${siteUrl}/routes/${slug}.html`;
   const schedules = routeData.getSchedules(from, to);
   const fares = routeData.getFares(from, to);
+  fs.writeFileSync(
+    path.join(routeDataDirectory, `${slug}.json`),
+    JSON.stringify({
+      version: 1,
+      from,
+      to,
+      fares,
+      schedules,
+      boardPoints: routeData.getStations(from),
+      dropPoints: routeData.getStations(to)
+    })
+  );
   const rows = schedules.length ? schedules.map((schedule) => '<tr><td>' + escapeHtml(schedule.depart) + ' to ' + escapeHtml(schedule.arrive) + '</td><td>' + escapeHtml(schedule.bus) + '</td><td>KSh ' + money(schedule.fares.Vip) + '</td><td>KSh ' + money(schedule.fares.Normal) + '</td><td>KSh ' + money(schedule.fares.Bclass) + '</td></tr>').join('')
     : '<tr><td>Reference fare</td><td>Route option</td><td>KSh ' + money(fares.Vip) + '</td><td>KSh ' + money(fares.Normal) + '</td><td>KSh ' + money(fares.Bclass) + '</td></tr>';
   const indexedFares = schedules.length ? { Vip: Math.min(...schedules.map((schedule) => schedule.fares.Vip)), Normal: Math.min(...schedules.map((schedule) => schedule.fares.Normal)) } : fares;
