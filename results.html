@@ -226,9 +226,6 @@
     const FROM = (params.get('from') || '').toUpperCase();
     const TO = (params.get('to') || '').toUpperCase();
     const DATE = params.get('date') || '';
-    const requestedDepartureTime = params.get('departAfter') || '';
-    const DEPART_AFTER = /^([01]\d|2[0-3]):[0-5]\d$/.test(requestedDepartureTime) ? requestedDepartureTime : '';
-    const DEPART_AFTER_MINS = DEPART_AFTER ? Number(DEPART_AFTER.slice(0, 2)) * 60 + Number(DEPART_AFTER.slice(3)) : null;
     const RETURN_DATE = params.get('returnDate') || '';
     const TRIP_TYPE = (params.get('trip') || 'one-way').toLowerCase() === 'round-trip' ? 'Round-Trip' : 'One-Way';
     const IS_ROUND_TRIP = TRIP_TYPE === 'Round-Trip' && !!RETURN_DATE && RETURN_DATE >= DATE;
@@ -237,8 +234,7 @@
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
     document.getElementById('routeTitle').textContent = FROM && TO ? (IS_ROUND_TRIP ? FROM + ' ↔ ' + TO : FROM + ' - ' + TO) : 'Choose a route';
-    document.getElementById('routeDate').textContent = (IS_ROUND_TRIP ? DATE + ' · Return ' + RETURN_DATE : DATE)
-      + (DEPART_AFTER ? ' · Depart after ' + DEPART_AFTER : '');
+    document.getElementById('routeDate').textContent = IS_ROUND_TRIP ? DATE + ' · Return ' + RETURN_DATE : DATE;
     document.getElementById('outboundRoute').textContent = FROM + ' to ' + TO;
     document.getElementById('outboundDate').textContent = 'Travel date: ' + (DATE || 'Not specified');
     document.getElementById('returnRoute').textContent = TO + ' to ' + FROM;
@@ -501,7 +497,6 @@
 
     function applyFilters() {
       return allTrips.filter((t) =>
-        (!DEPART_AFTER || t.leg !== 'outbound' || t.depMins >= DEPART_AFTER_MINS) &&
         (!active.boarding.size || t.boardPoints.some((p) => active.boarding.has(p))) &&
         (!active.dropping.size || t.dropPoints.some((p) => active.dropping.has(p))) &&
         (!active.departure.size || [...active.departure].some((w) => WINDOWS[w](t.depMins))) &&

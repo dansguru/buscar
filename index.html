@@ -145,10 +145,6 @@
           <span class="field-icon">↩</span>
           <span class="field-content"><small>RETURN DATE</small><input type="date" id="returnDate" aria-label="Return date"></span>
         </label>
-        <label class="booking-field date-field">
-          <span class="field-icon">◷</span>
-          <span class="field-content"><small>DEPART AFTER</small><input type="time" id="departureTime" aria-label="Preferred departure time"></span>
-        </label>
         <button class="search-btn" type="submit">SEARCH BUS</button>
       </form>
     </section>
@@ -428,7 +424,6 @@
     // Today / Tom quick dates
     const dateInput = document.getElementById('travelDate');
     const returnDateInput = document.getElementById('returnDate');
-    const departureTimeInput = document.getElementById('departureTime');
     const returnDateField = document.getElementById('returnDateField');
     const bookingForm = document.getElementById('bookingForm');
     const isoDate = (offset) => {
@@ -501,7 +496,6 @@
       const variant = window.BuscarSite.recordSearch(from, to, date);
       const search = { from, to, date, trip, variant: String(variant) };
       if (trip === 'round-trip') search.returnDate = returnDate;
-      if (departureTimeInput.value) search.departAfter = departureTimeInput.value;
       const params = new URLSearchParams(search);
       window.location.href = 'results.html?' + params.toString();
     });
