@@ -232,13 +232,13 @@
         </label>
       </div>
       <div class="route-chips" id="routeChips"></div>
-      <nav class="route-seo-links" aria-label="Popular bus routes">
-        <a class="route-chip" href="routes/nairobi-to-mombasa.html">Nairobi to Mombasa bus tickets</a>
-        <a class="route-chip" href="routes/nairobi-to-kampala.html">Nairobi to Kampala bus</a>
-        <a class="route-chip" href="routes/mombasa-to-kampala.html">Mombasa to Kampala bus</a>
-        <a class="route-chip" href="routes/nairobi-to-entebbe.html">Nairobi to Entebbe bus</a>
-        <a class="route-chip" href="routes/nairobi-to-arusha.html">Nairobi to Arusha bus</a>
-        <a class="route-chip" href="routes/mombasa-to-dar-es-salaam.html">Mombasa to Dar es Salaam bus</a>
+      <nav class="route-seo-links" aria-label="Popular routes to book">
+        <a class="route-chip" data-from="NAIROBI" data-to="MOMBASA" href="routes/nairobi-to-mombasa.html">Nairobi to Mombasa bus tickets</a>
+        <a class="route-chip" data-from="NAIROBI" data-to="KAMPALA" href="routes/nairobi-to-kampala.html">Nairobi to Kampala bus</a>
+        <a class="route-chip" data-from="MOMBASA" data-to="KAMPALA" href="routes/mombasa-to-kampala.html">Mombasa to Kampala bus</a>
+        <a class="route-chip" data-from="NAIROBI" data-to="ENTEBBE" href="routes/nairobi-to-entebbe.html">Nairobi to Entebbe bus</a>
+        <a class="route-chip" data-from="NAIROBI" data-to="ARUSHA" href="routes/nairobi-to-arusha.html">Nairobi to Arusha bus</a>
+        <a class="route-chip" data-from="MOMBASA" data-to="DAR ES SALAAM" href="routes/mombasa-to-dar-es-salaam.html">Mombasa to Dar es Salaam bus</a>
       </nav>
       <div class="routes-more">
         <button type="button" id="loadMore">Load more routes
@@ -437,6 +437,16 @@
       const p = (n) => String(n).padStart(2, '0');
       return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
     };
+    document.querySelectorAll('.route-seo-links a[data-from][data-to]').forEach((link) => {
+      const params = new URLSearchParams({
+        from: link.dataset.from,
+        to: link.dataset.to,
+        date: isoDate(0),
+        trip: 'one-way',
+        variant: '0'
+      });
+      link.href = 'results.html?' + params.toString();
+    });
     const addDays = (date, days) => {
       const [year, month, day] = date.split('-').map(Number);
       const value = new Date(year, month - 1, day);
