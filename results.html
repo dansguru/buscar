@@ -302,7 +302,7 @@
           arrive: schedule.arrive,
           duration: schedule.duration || Math.floor(durationMins / 60) + 'h ' + (durationMins % 60) + 'm',
           rating: (3 + (seed % 20) / 10).toFixed(1),
-          seatsLeft: 28 + 2 * (seed % 4),
+          seatsLeft: 16 + 2 * (seed % 4),
           fares: schedule.fares || fares,
           amenities: AMENITIES.filter((_, amenityIndex) => (seed >> amenityIndex) & 1 || amenityIndex === 0),
           boardPoints,

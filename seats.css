@@ -152,7 +152,7 @@
 .seat.vip { --c: var(--seat-vip); }
 .seat.normal { --c: var(--seat-normal); }
 .seat.business { --c: var(--seat-business); }
-.seat .vip-tag { font-size: 7px; font-weight: 800; letter-spacing: .4px; margin-bottom: 3px; opacity: .95; }
+.seat .seat-type { font-size: 6px; font-weight: 800; letter-spacing: .2px; margin-bottom: 3px; white-space: nowrap; }
 .seat em { font-style: normal; font-size: 13px; }
 
 .seat.free:hover { transform: translateY(-3px); filter: brightness(1.08); }

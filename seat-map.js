@@ -56,12 +56,15 @@
     return `grid-column:${column};grid-row:${row}`;
   };
   const getType = (id) => ['A', 'B', 'C', 'D'].includes(id) ? 'vip' : Number(id) <= 4 ? 'business' : 'normal';
-  const getName = (id) => getType(id) === 'vip' ? `VIP ${id}` : `Seat ${id}`;
+  const getName = (id) => {
+    const type = getType(id);
+    return `${type === 'vip' ? 'VIP' : type === 'business' ? 'B-Class' : 'Normal'} ${id}`;
+  };
   const vipIds = Object.freeze(ids.filter((id) => getType(id) === 'vip'));
   const businessIds = Object.freeze(ids.filter((id) => getType(id) === 'business'));
 
   function createSeats(trip, seed, savedSeats = []) {
-    const minimumAvailable = vipIds.length + businessIds.length + 20;
+    const minimumAvailable = vipIds.length + businessIds.length + 8;
     const availableCount = Math.min(ids.length, Math.max(minimumAvailable, Math.floor(Number(trip.seatsLeft)) || 0));
     const availablePairCount = Math.min(normalPairs.length, Math.floor((availableCount - vipIds.length - businessIds.length) / 2));
     const maxStart = normalPairs.length - availablePairCount;
@@ -83,9 +86,8 @@
     const selected = selectedSeats.has(id);
     const state = selected ? 'selected' : seat.free ? 'free' : 'booked';
     const label = `${getName(id)} — KES ${money(trip.fares[fareKeys[seat.type]])}, availability to be confirmed`;
-    const content = seat.type === 'vip'
-      ? `<span class="vip-tag">VIP</span><em>${escapeHtml(id)}</em>`
-      : escapeHtml(id);
+    const seatType = seat.type === 'vip' ? 'VIP' : seat.type === 'business' ? 'B-CLASS' : 'NORMAL';
+    const content = `<span class="seat-type">${seatType}</span><em>${escapeHtml(id)}</em>`;
     return `<button type="button" class="seat ${seat.type} ${state}" data-seat="${escapeHtml(id)}" style="${placement(item)};--seat-order:${index}" ${state === 'booked' ? 'disabled' : ''} aria-pressed="${selected}" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}">${content}</button>`;
   }
 
