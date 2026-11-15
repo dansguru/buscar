@@ -59,25 +59,19 @@
   const getName = (id) => getType(id) === 'vip' ? `VIP ${id}` : `Seat ${id}`;
   const vipIds = Object.freeze(ids.filter((id) => getType(id) === 'vip'));
   const businessIds = Object.freeze(ids.filter((id) => getType(id) === 'business'));
-  const normalIds = Object.freeze(ids.filter((id) => getType(id) === 'normal'));
-  const normalSingles = Object.freeze(normalIds.filter((id) =>
-    !normalPairs.some((pair) => pair.includes(id))));
 
   function createSeats(trip, seed, savedSeats = []) {
-    const minimumAvailable = vipIds.length + businessIds.length + normalSingles.length + 30;
+    const minimumAvailable = vipIds.length + businessIds.length + 20;
     const availableCount = Math.min(ids.length, Math.max(minimumAvailable, Math.floor(Number(trip.seatsLeft)) || 0));
-    const normalAvailable = availableCount - vipIds.length - businessIds.length;
-    const singleCount = Math.min(normalSingles.length, normalAvailable % 2);
-    const availablePairCount = Math.min(normalPairs.length, Math.floor((normalAvailable - singleCount) / 2));
+    const availablePairCount = Math.min(normalPairs.length, Math.floor((availableCount - vipIds.length - businessIds.length) / 2));
     const maxStart = normalPairs.length - availablePairCount;
     const pairStart = hash(`${trip.id}|${seed}|normal-pairs`) % (maxStart + 1);
     const free = new Set([
       ...vipIds,
       ...businessIds,
-      ...normalSingles.slice(0, singleCount),
       ...normalPairs.slice(pairStart, pairStart + availablePairCount).reduce((seats, pair) => seats.concat(pair), [])
     ]);
-    if (Array.isArray(savedSeats)) savedSeats.slice(0, 6).forEach((id) => free.add(id));
+    if (Array.isArray(savedSeats)) savedSeats.slice(0, ids.length).forEach((id) => free.add(id));
     const seats = {};
     ids.forEach((id) => { seats[id] = { type: getType(id), free: free.has(id) }; });
     return seats;

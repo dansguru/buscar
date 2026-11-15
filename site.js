@@ -111,7 +111,7 @@
   function saveSelection(key, selection) {
     const state = getState();
     state.selections[key] = {
-      seats: Array.isArray(selection.seats) ? selection.seats.slice(0, 6) : [],
+      seats: Array.isArray(selection.seats) ? selection.seats.slice(0, 45) : [],
       board: String(selection.board || '').slice(0, 100),
       drop: String(selection.drop || '').slice(0, 100),
       name: String(selection.name || '').slice(0, 80),
