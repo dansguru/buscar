@@ -1015,11 +1015,19 @@
   ];
 
   const DEFAULT_BUS = '46 seater A'; // shown for every service; change it here or per row if you add a bus column
+  const SERVICE_DEPARTURES = ['08:00 AM', '11:00 AM', '04:00 PM', '09:30 PM'];
   const toMinutes = (time) => {
     const [clock, period] = time.split(' ');
     let [hours, minutes] = clock.split(':').map(Number);
     hours = (hours % 12) + (period === 'PM' ? 12 : 0);
     return hours * 60 + minutes;
+  };
+  const formatTime = (minutes) => {
+    const timeOfDay = ((minutes % 1440) + 1440) % 1440;
+    const hours = Math.floor(timeOfDay / 60);
+    const period = hours < 12 ? 'AM' : 'PM';
+    const displayHours = hours % 12 || 12;
+    return `${String(displayHours).padStart(2, '0')}:${String(timeOfDay % 60).padStart(2, '0')} ${period}`;
   };
   const parseDuration = (text) => {
     const [, h, m] = /(\d+)h\s*(\d+)m/.exec(text);
@@ -1034,15 +1042,18 @@
   });
 
   const SCHEDULES = Object.create(null);
-  TIME_ROWS.forEach(([from, to, depart, arrive, duration]) => {
+  TIME_ROWS.forEach(([from, to, , , duration]) => {
     const key = routeKey(from, to);
     if (!SCHEDULES[key]) SCHEDULES[key] = [];
-    const depMins = toMinutes(depart);
     const durationMins = parseDuration(duration);
-    SCHEDULES[key].push({
-      depart, arrive, depMins, arrMins: toMinutes(arrive), bus: DEFAULT_BUS,
-      duration, durationMins, dayOffset: Math.floor((depMins + durationMins) / 1440),
-      fares: { ...(ROUTE_FARES[key] || DEFAULT_FARES) }
+    SERVICE_DEPARTURES.forEach((depart) => {
+      const depMins = toMinutes(depart);
+      const arrivalMins = depMins + durationMins;
+      SCHEDULES[key].push({
+        depart, arrive: formatTime(arrivalMins), depMins, arrMins: arrivalMins % 1440, bus: DEFAULT_BUS,
+        duration, durationMins, dayOffset: Math.floor(arrivalMins / 1440),
+        fares: { ...(ROUTE_FARES[key] || DEFAULT_FARES) }
+      });
     });
   });
 
