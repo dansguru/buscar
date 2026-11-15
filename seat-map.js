@@ -14,6 +14,7 @@
     { id: '4', column: 5, row: 4 }
   ];
 
+  const normalPairs = [];
   for (let index = 0; index < 8; index += 1) {
     const row = 5 + index;
     const firstSeat = 5 + index * 4;
@@ -22,6 +23,10 @@
       { id: String(firstSeat + 1), column: 2, row },
       { id: String(firstSeat + 2), column: 4, row },
       { id: String(firstSeat + 3), column: 5, row }
+    );
+    normalPairs.push(
+      [String(firstSeat), String(firstSeat + 1)],
+      [String(firstSeat + 2), String(firstSeat + 3)]
     );
   }
 
@@ -32,6 +37,7 @@
     { id: '40', column: 4, row: 13 },
     { id: '41', column: 5, row: 13 }
   );
+  normalPairs.push(['37', '38'], ['40', '41']);
 
   const ids = Object.freeze(layout.filter((item) => item.id).map((item) => item.id));
   const fareKeys = Object.freeze({ vip: 'Vip', business: 'Bclass', normal: 'Normal' });
@@ -51,11 +57,26 @@
   };
   const getType = (id) => ['A', 'B', 'C', 'D'].includes(id) ? 'vip' : Number(id) <= 4 ? 'business' : 'normal';
   const getName = (id) => getType(id) === 'vip' ? `VIP ${id}` : `Seat ${id}`;
+  const vipIds = Object.freeze(ids.filter((id) => getType(id) === 'vip'));
+  const businessIds = Object.freeze(ids.filter((id) => getType(id) === 'business'));
+  const normalIds = Object.freeze(ids.filter((id) => getType(id) === 'normal'));
+  const normalSingles = Object.freeze(normalIds.filter((id) =>
+    !normalPairs.some((pair) => pair.includes(id))));
 
   function createSeats(trip, seed, savedSeats = []) {
-    const order = ids.slice().sort((left, right) =>
-      hash(left + trip.id + seed) - hash(right + trip.id + seed));
-    const free = new Set(order.slice(0, trip.seatsLeft));
+    const minimumAvailable = vipIds.length + businessIds.length + normalSingles.length + 30;
+    const availableCount = Math.min(ids.length, Math.max(minimumAvailable, Math.floor(Number(trip.seatsLeft)) || 0));
+    const normalAvailable = availableCount - vipIds.length - businessIds.length;
+    const singleCount = Math.min(normalSingles.length, normalAvailable % 2);
+    const availablePairCount = Math.min(normalPairs.length, Math.floor((normalAvailable - singleCount) / 2));
+    const maxStart = normalPairs.length - availablePairCount;
+    const pairStart = hash(`${trip.id}|${seed}|normal-pairs`) % (maxStart + 1);
+    const free = new Set([
+      ...vipIds,
+      ...businessIds,
+      ...normalSingles.slice(0, singleCount),
+      ...normalPairs.slice(pairStart, pairStart + availablePairCount).reduce((seats, pair) => seats.concat(pair), [])
+    ]);
     if (Array.isArray(savedSeats)) savedSeats.slice(0, 6).forEach((id) => free.add(id));
     const seats = {};
     ids.forEach((id) => { seats[id] = { type: getType(id), free: free.has(id) }; });
