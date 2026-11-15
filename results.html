@@ -291,7 +291,9 @@
       })();
       return routeSchedules.map((schedule, index) => {
         const seed = hash([from, to, travelDate, schedule.depart, index, leg].join('|'));
-        const durationMins = (schedule.arrMins - schedule.depMins + 1440) % 1440;
+        const durationMins = Number.isFinite(schedule.durationMins)
+          ? schedule.durationMins
+          : (schedule.arrMins - schedule.depMins + 1440) % 1440;
         const trip = {
           id: 'T' + (leg === 'return' ? 'R' : 'O') + seed.toString(36).toUpperCase(),
           type: schedule.bus,
@@ -302,7 +304,7 @@
           depMins: schedule.depMins,
           depart: schedule.depart,
           arrive: schedule.arrive,
-          duration: Math.floor(durationMins / 60) + 'h ' + (durationMins % 60) + 'm',
+          duration: schedule.duration || Math.floor(durationMins / 60) + 'h ' + (durationMins % 60) + 'm',
           rating: (3 + (seed % 20) / 10).toFixed(1),
           seatsLeft: 7 + (seed % 20),
           fares: schedule.fares || fares,
